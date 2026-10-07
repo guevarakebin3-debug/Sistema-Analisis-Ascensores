@@ -1,0 +1,18 @@
+# Entornos y archivos temporales
+__pycache__/
+*.pyc
+.env
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Datos generados
+*.log
+*.sqlite3
+
+# Sistema operativo
+Thumbs.db
+.DS_Store
