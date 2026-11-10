@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restablecer contraseña | AforoVisión</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f3f6fa;
+            color: #1f2937;
+        }
+
+        .contenedor {
+            width: 100%;
+            max-width: 420px;
+            padding: 32px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .logo {
+            color: #1769aa;
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .descripcion {
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 7px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: 2px solid #1769aa;
+            border-color: #1769aa;
+        }
+
+        button,
+        .volver {
+            display: block;
+            width: 100%;
+            margin-top: 22px;
+            padding: 13px;
+            border: none;
+            border-radius: 7px;
+            background: #1769aa;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button:hover,
+        .volver:hover {
+            background: #12558b;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #mensaje {
+            margin-top: 18px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        #mensaje.exito {
+            color: #187545;
+            font-weight: bold;
+        }
+
+        #mensaje.error {
+            color: #b42318;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="contenedor">
+
+        <div class="logo" id="logo">AforoVisión</div>
+
+        <h1 id="titulo">Restablecer contraseña</h1>
+
+        <p class="descripcion" id="descripcion">
+            Ingresa tu nueva contraseña para recuperar el acceso a tu cuenta.
+        </p>
+
+        <form id="formulario" novalidate>
+            <label for="nueva_contrasena">
+                Nueva contraseña
+            </label>
+
+            <input
+                type="password"
+                id="nueva_contrasena"
+                minlength="8"
+                maxlength="128"
+                autocomplete="new-password"
+                placeholder="Mínimo 8 caracteres"
+                required
+            >
+
+            <label for="confirmar_contrasena">
+                Confirmar nueva contraseña
+            </label>
+
+            <input
+                type="password"
+                id="confirmar_contrasena"
+                minlength="8"
+                maxlength="128"
+                autocomplete="new-password"
+                placeholder="Repite la contraseña"
+                required
+            >
+
+            <button type="submit" id="boton">
+                Cambiar contraseña
+            </button>
+        </form>
+
+        <p id="mensaje" role="status" aria-live="polite"></p>
+
+        <a
+            class="volver"
+            id="volver"
+            href="login.html"
+            hidden
+        >
+            Volver al inicio de sesión
+        </a>
+
+    </main>
+
+    <script>
+        (() => {
+            const formulario = document.getElementById("formulario");
+            const mensaje = document.getElementById("mensaje");
+            const boton = document.getElementById("boton");
+            const titulo = document.getElementById("titulo");
+            const logo = document.getElementById("logo");
+            const descripcion = document.getElementById("descripcion");
+            const volver = document.getElementById("volver");
+
+            const campoNueva = document.getElementById(
+                "nueva_contrasena"
+            );
+
+            const campoConfirmar = document.getElementById(
+                "confirmar_contrasena"
+            );
+
+            const parametros = new URLSearchParams(
+                window.location.search
+            );
+
+            const token = parametros.get("token");
+            const claveCambioCompletado =
+                "aforovision_cambio_contrasena_completado";
+
+            let solicitudEnCurso = false;
+            let cambioCompletado = false;
+
+            function mostrarError(texto) {
+                mensaje.textContent = texto;
+                mensaje.className = "error";
+            }
+
+            function mostrarExito() {
+                cambioCompletado = true;
+                sessionStorage.setItem(claveCambioCompletado, "true");
+                window.history.replaceState(
+                    null,
+                    "",
+                    window.location.pathname
+                );
+
+                // Retirar el formulario para que los campos no sigan visibles.
+                formulario.remove();
+
+                logo.hidden = true;
+                descripcion.hidden = true;
+
+                // Actualizar el título y mostrar la confirmación.
+                titulo.textContent = "Contraseña actualizada";
+
+                mensaje.textContent = "Contraseña cambiada correctamente.";
+
+                mensaje.className = "exito";
+
+                // Mostrar el botón de regreso al login.
+                volver.hidden = false;
+                volver.style.display = "block";
+                volver.setAttribute("href", "login.html");
+            }
+
+            if (token) {
+                sessionStorage.removeItem(claveCambioCompletado);
+            } else if (
+                sessionStorage.getItem(claveCambioCompletado) === "true"
+            ) {
+                mostrarExito();
+            }
+
+            formulario.addEventListener("submit", async (evento) => {
+                evento.preventDefault();
+
+                // Evitar solicitudes repetidas.
+                if (solicitudEnCurso || cambioCompletado) {
+                    return;
+                }
+
+                mensaje.textContent = "";
+                mensaje.className = "";
+
+                if (!token) {
+                    mostrarError(
+                        "El enlace no contiene un token de recuperación. " +
+                        "Solicita uno nuevo desde el inicio de sesión."
+                    );
+                    return;
+                }
+
+                const nuevaContrasena = campoNueva.value;
+                const confirmarContrasena = campoConfirmar.value;
+
+                if (nuevaContrasena.length < 8) {
+                    mostrarError(
+                        "La contraseña debe tener al menos 8 caracteres."
+                    );
+                    return;
+                }
+
+                if (nuevaContrasena.length > 128) {
+                    mostrarError(
+                        "La contraseña no puede superar 128 caracteres."
+                    );
+                    return;
+                }
+
+                if (nuevaContrasena !== confirmarContrasena) {
+                    mostrarError("Las contraseñas no coinciden.");
+                    return;
+                }
+
+                solicitudEnCurso = true;
+                boton.disabled = true;
+                boton.textContent = "Procesando...";
+
+                try {
+                    const respuesta = await fetch(
+                        "http://127.0.0.1:8000/api/auth/restablecer-contrasena",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                token: token,
+                                nueva_contrasena: nuevaContrasena
+                            })
+                        }
+                    );
+
+                    const resultado = await respuesta.json();
+
+                    if (!respuesta.ok) {
+                        throw new Error(
+                            resultado.detail ||
+                            "No se pudo restablecer la contraseña."
+                        );
+                    }
+
+                    // No navegar ni recargar tras una respuesta exitosa.
+                    mostrarExito();
+
+                } catch (error) {
+                    mostrarError(
+                        error.message ||
+                        "No se pudo conectar con el servidor. " +
+                        "Comprueba que el backend esté funcionando."
+                    );
+
+                    boton.disabled = false;
+                    boton.textContent = "Cambiar contraseña";
+
+                } finally {
+                    solicitudEnCurso = false;
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

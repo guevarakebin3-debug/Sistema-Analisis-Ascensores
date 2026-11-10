@@ -1,0 +1,6 @@
+fastapi[standard]
+sqlalchemy
+httpx
+pwdlib[argon2]
+PyJWT
+email-validator

@@ -12,6 +12,9 @@ venv/
 # Datos generados
 *.log
 *.sqlite3
+*.db
+*.db-wal
+*.db-shm
 
 # Sistema operativo
 Thumbs.db

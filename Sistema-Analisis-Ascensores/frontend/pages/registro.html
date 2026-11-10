@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear cuenta | AforoVisión</title>
+    <link rel="stylesheet" href="../styles/login.css">
+</head>
+<body>
+
+    <main class="login-container">
+        <section class="login-card">
+
+            <header class="login-header">
+                <div class="logo">
+                    <svg viewBox="0 0 64 64" role="img"
+                         aria-label="Logo de AforoVisión">
+                        <rect x="5" y="5" width="54" height="54" rx="12"
+                              fill="#263d55"/>
+                        <path d="M20 48 V17 H44 V48 M20 28 H44 M20 38 H44"
+                              fill="none" stroke="#ffffff"
+                              stroke-width="3.5" stroke-linecap="round"/>
+                        <circle cx="32" cy="22" r="3" fill="#8cc8ff"/>
+                        <circle cx="32" cy="33" r="3" fill="#8cc8ff"/>
+                        <circle cx="32" cy="43" r="3" fill="#8cc8ff"/>
+                    </svg>
+                </div>
+
+                <h1>AforoVisión</h1>
+                <p class="subtitle">
+                    Sistema de análisis y detección de sobrecarga en ascensores
+                </p>
+                <p class="subtitle">Crear una cuenta</p>
+            </header>
+
+            <div class="login-content">
+                <form id="registroForm">
+
+                    <div class="form-group">
+                        <label for="nombre">Nombre completo</label>
+                        <input
+                            type="text"
+                            id="nombre"
+                            name="nombre"
+                            placeholder="Ingresa tu nombre completo"
+                            autocomplete="name"
+                            minlength="2"
+                            maxlength="100"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="usuario">Nombre de usuario</label>
+                        <input
+                            type="text"
+                            id="usuario"
+                            name="usuario"
+                            placeholder="Crea un nombre de usuario"
+                            autocomplete="username"
+                            minlength="3"
+                            maxlength="50"
+                            pattern="[a-zA-Z0-9_.-]+"
+                            title="Usa letras, números, puntos, guiones o guiones bajos."
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="correo">Correo electrónico</label>
+                        <input
+                            type="email"
+                            id="correo"
+                            name="correo"
+                            placeholder="ejemplo@correo.com"
+                            autocomplete="email"
+                            maxlength="255"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contrasena">Contraseña</label>
+                        <input
+                            type="password"
+                            id="contrasena"
+                            name="contrasena"
+                            placeholder="Mínimo 8 caracteres"
+                            autocomplete="new-password"
+                            minlength="8"
+                            maxlength="128"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmarContrasena">
+                            Confirmar contraseña
+                        </label>
+                        <input
+                            type="password"
+                            id="confirmarContrasena"
+                            name="confirmarContrasena"
+                            placeholder="Vuelve a escribir la contraseña"
+                            autocomplete="new-password"
+                            minlength="8"
+                            maxlength="128"
+                            required
+                        >
+                    </div>
+
+                    <p id="mensaje" role="alert" aria-live="polite"></p>
+
+                    <button type="submit" id="btnRegistro">
+                        Crear cuenta
+                    </button>
+
+                    <p class="enlace-registro">
+                        ¿Ya tienes una cuenta?
+                        <a href="login.html">Iniciar sesión</a>
+                    </p>
+
+                </form>
+            </div>
+
+            <footer class="login-footer">
+                AforoVisión • Sistema de administración de ascensores
+            </footer>
+
+        </section>
+    </main>
+
+    <script>
+        const formulario = document.getElementById("registroForm");
+        const campoNombre = document.getElementById("nombre");
+        const campoUsuario = document.getElementById("usuario");
+        const campoCorreo = document.getElementById("correo");
+        const campoContrasena = document.getElementById("contrasena");
+        const campoConfirmar = document.getElementById("confirmarContrasena");
+        const mensaje = document.getElementById("mensaje");
+        const boton = document.getElementById("btnRegistro");
+
+        formulario.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            mensaje.textContent = "";
+
+            const nombre = campoNombre.value.trim();
+            const usuario = campoUsuario.value.trim();
+            const correo = campoCorreo.value.trim();
+            const contrasena = campoContrasena.value;
+            const confirmar = campoConfirmar.value;
+
+            if (!nombre || !usuario || !correo || !contrasena || !confirmar) {
+                mensaje.textContent = "Por favor, complete todos los campos.";
+                return;
+            }
+
+            if (nombre.length < 2) {
+                mensaje.textContent =
+                    "El nombre debe tener al menos 2 caracteres.";
+                return;
+            }
+
+            if (usuario.length < 3) {
+                mensaje.textContent =
+                    "El nombre de usuario debe tener al menos 3 caracteres.";
+                return;
+            }
+
+            if (!/^[a-zA-Z0-9_.-]+$/.test(usuario)) {
+                mensaje.textContent =
+                    "El usuario solo puede contener letras, números, puntos, guiones y guiones bajos.";
+                return;
+            }
+
+            if (contrasena.length < 8) {
+                mensaje.textContent =
+                    "La contraseña debe tener al menos 8 caracteres.";
+                return;
+            }
+
+            if (contrasena !== confirmar) {
+                mensaje.textContent =
+                    "Las contraseñas no coinciden.";
+                return;
+            }
+
+            boton.disabled = true;
+            boton.textContent = "Registrando...";
+
+            try {
+                const respuesta = await fetch(
+                    "http://127.0.0.1:8000/api/auth/registro",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify({
+                            nombre: nombre,
+                            usuario: usuario,
+                            correo: correo,
+                            contrasena: contrasena,
+                            clave_registro: "AforoRegistro2026"
+                        })
+                    }
+                );
+
+                const datos = await respuesta.json();
+
+                if (!respuesta.ok) {
+                    if (respuesta.status === 409) {
+                        mensaje.textContent = datos.detail ||
+                            "El usuario o el correo ya están registrados.";
+                    } else if (respuesta.status === 403) {
+                        mensaje.textContent =
+                            "No se pudo completar el registro. Verifique la configuración.";
+                    } else if (respuesta.status === 503) {
+                        mensaje.textContent =
+                            "El registro no está habilitado en este momento.";
+                    } else if (respuesta.status === 422) {
+                        mensaje.textContent =
+                            "Verifique los datos ingresados e inténtelo nuevamente.";
+                    } else {
+                        mensaje.textContent =
+                            datos.detail || "No fue posible crear la cuenta.";
+                    }
+                    return;
+                }
+
+                mensaje.textContent =
+                    "Usuario registrado correctamente. Redirigiendo al inicio de sesión...";
+
+                formulario.reset();
+
+                setTimeout(function() {
+                    window.location.href = "login.html";
+                }, 1800);
+
+            } catch (error) {
+                mensaje.textContent =
+                    "No se pudo conectar con el servidor. Verifique que el backend esté funcionando.";
+            } finally {
+                boton.disabled = false;
+                boton.textContent = "Crear cuenta";
+            }
+        });
+    </script>
+
+</body>
+</html>

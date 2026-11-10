@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AforoVisión</title>
+</head>
+<body>
+    <header>
+        <h1>AforoVisión</h1>
+        <p>Sistema de análisis de ocupación en ascensores</p>
+    </header>
+
+    <main>
+        <section>
+            <h2>Bienvenido a AforoVisión</h2>
+            <p>
+                Sistema de visión artificial para detectar personas
+                y analizar la ocupación del ascensor.
+            </p>
+        </section>
+
+        <section>
+            <h2>Estado del sistema</h2>
+            <p id="estado">Comprobando conexión...</p>
+        </section>
+
+        <section>
+            <h2>Ocupación actual</h2>
+            <p>Entradas: <span id="entradas">--</span></p>
+            <p>Salidas: <span id="salidas">--</span></p>
+            <p>Personas en el ascensor: <span id="ocupacion">--</span></p>
+            <button id="actualizar">Actualizar información</button>
+        </section>
+    </main>
+
+    <script>
+        const API = "http://127.0.0.1:8000";
+
+        async function actualizarInformacion() {
+            const estado = document.getElementById("estado");
+
+            try {
+                const respuestaEstado = await fetch(`${API}/health`);
+
+                if (!respuestaEstado.ok) {
+                    throw new Error("El servicio no está disponible.");
+                }
+
+                const datosEstado = await respuestaEstado.json();
+                estado.textContent = datosEstado.mensaje;
+
+                const respuestaOcupacion = await fetch(`${API}/ocupacion`);
+
+                if (!respuestaOcupacion.ok) {
+                    throw new Error("No se pudo consultar la ocupación.");
+                }
+
+                const datos = await respuestaOcupacion.json();
+
+                document.getElementById("entradas").textContent = datos.entradas;
+                document.getElementById("salidas").textContent = datos.salidas;
+                document.getElementById("ocupacion").textContent =
+                    datos.ocupacion_actual;
+
+            } catch (error) {
+                estado.textContent =
+                    "No se pudo conectar con el microservicio. Verifica que esté iniciado.";
+                console.error(error);
+            }
+        }
+
+        document.getElementById("actualizar").addEventListener(
+            "click",
+            actualizarInformacion
+        );
+
+        actualizarInformacion();
+    </script>
+</body>
+</html>

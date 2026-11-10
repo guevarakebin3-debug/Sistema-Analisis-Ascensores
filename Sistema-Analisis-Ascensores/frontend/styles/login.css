@@ -1,0 +1,161 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background: #f2f4f7;
+    color: #263238;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 460px;
+}
+
+.login-card {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #dce1e7;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+}
+
+.login-header {
+    padding: 30px 30px 20px;
+    text-align: center;
+}
+
+.logo {
+    width: 20px;
+    height: 20px;
+    margin: 0 auto 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo svg {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    display: block;
+}
+.login-header h1 {
+    margin: 0 0 8px;
+    color: #263d55;
+    font-size: 28px;
+}
+
+.subtitle {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.login-content {
+    margin: 0 24px;
+    padding: 24px;
+    border: 1px solid #dce1e7;
+    border-radius: 8px;
+}
+
+.login-content h2 {
+    margin: 0 0 8px;
+    font-size: 21px;
+}
+
+.description {
+    margin: 0 0 22px;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+input {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #b8c2cc;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #263238;
+    font-size: 14px;
+}
+
+input:focus {
+    outline: 2px solid #647f9b;
+    outline-offset: 1px;
+}
+
+button {
+    width: 100%;
+    margin-top: 8px;
+    padding: 13px;
+    border: none;
+    border-radius: 6px;
+    background: #1877F2;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #344f6b;
+}
+
+#mensaje {
+    margin: 0;
+    color: #9b2c2c;
+    font-size: 13px;
+}
+
+.login-footer {
+    padding: 20px 24px 24px;
+    text-align: center;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 14px;
+    }
+
+    .login-header {
+        padding: 24px 18px 18px;
+    }
+
+    .login-content {
+        margin: 0 14px;
+        padding: 18px;
+    }
+
+    .login-footer {
+        padding: 18px;
+    }
+}

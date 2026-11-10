@@ -1,0 +1,533 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #172a43;
+    background: #f7f9fc;
+    font-size: 13px;
+}
+
+/* BARRA LATERAL */
+
+.sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 235px;
+    background: #fff;
+    border-right: 1px solid #d4deeb;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+}
+
+.brand {
+    height: 120px;
+    padding: 22px 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #d4deeb;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    color: #3986ff;
+    background: #f1f6ff;
+    border: 1px solid #c9d8ec;
+    border-radius: 9px;
+    font-size: 23px;
+}
+
+.brand h2 {
+    margin: 0 0 5px;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.brand p {
+    margin: 0;
+    font: 10px monospace;
+    color: #63748c;
+}
+
+nav {
+    padding-top: 16px;
+}
+
+nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 40px;
+    padding: 10px 17px;
+    color: #50627c;
+    text-decoration: none;
+}
+
+nav a span {
+    font-size: 16px;
+}
+
+nav a.active,
+nav a:hover {
+    color: #152b46;
+    background: #eef3f9;
+}
+
+nav a.active {
+    font-weight: bold;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding: 15px;
+    border-top: 1px solid #d4deeb;
+}
+
+.general-status {
+    padding: 13px;
+    border: 1px solid #d4deeb;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.general-status small {
+    font: 10px monospace;
+    letter-spacing: .7px;
+    color: #63748c;
+}
+
+.general-status p {
+    margin: 9px 0 0;
+    color: #08b957;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.dot,
+.camera-status i,
+.recording i {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: #18c768;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.logout {
+    display: block;
+    margin-top: 18px;
+    color: #536985;
+    text-decoration: none;
+}
+
+/* CONTENIDO PRINCIPAL */
+
+.main-content {
+    margin-left: 235px;
+    padding: 30px 32px;
+}
+
+.page-header {
+    margin-bottom: 26px;
+}
+
+.page-header h1 {
+    margin: 0 0 8px;
+    font-size: 21px;
+}
+
+.page-header p {
+    margin: 0;
+    color: #536985;
+    font-size: 12px;
+}
+
+/* TARJETAS DE CÁMARAS */
+
+.camera-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.camera-card {
+    min-width: 0;
+    background: #fff;
+    border: 1px solid #d0dbea;
+    border-radius: 11px;
+    overflow: hidden;
+}
+
+.camera-header {
+    min-height: 49px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 17px;
+    border-bottom: 1px solid #d0dbea;
+}
+
+.camera-header h2 {
+    margin: 0;
+    font-size: 13px;
+}
+
+.camera-icon {
+    margin-right: 8px;
+    color: #3986ff;
+}
+
+.camera-status {
+    flex-shrink: 0;
+    padding: 5px 9px;
+    border-radius: 20px;
+    background: #effbf3;
+    color: #08b957;
+    font: 9px monospace;
+}
+
+/* ÁREA DE VIDEO */
+
+.camera-view {
+    height: 260px;
+    position: relative;
+    overflow: hidden;
+    background-color: #101923;
+    background-image:
+        linear-gradient(rgba(199, 211, 226, .08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(199, 211, 226, .08) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+/* REPRODUCTOR */
+
+.camera-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #101923;
+    z-index: 0;
+}
+
+/* CANVAS PARA LAS DETECCIONES */
+
+.detection-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ELEMENTOS SOBRE EL VIDEO */
+
+.recording,
+.clock,
+.view-label {
+    position: absolute;
+    z-index: 2;
+    font: 9px monospace;
+}
+
+.recording {
+    top: 13px;
+    left: 11px;
+    color: #0cbd57;
+    background: rgba(0, 0, 0, .55);
+    padding: 5px 7px;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.recording i {
+    width: 6px;
+    height: 6px;
+}
+
+.clock {
+    top: 13px;
+    right: 11px;
+    color: #fff;
+    pointer-events: none;
+}
+
+.view-label {
+    left: 9px;
+    bottom: 10px;
+    color: #fff;
+    font-size: 8px;
+    background: rgba(0, 0, 0, .55);
+    padding: 5px 7px;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+/* LÍNEA VIRTUAL DE LA CÁMARA EXTERIOR */
+
+.virtual-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 2px dashed #3986ff;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.virtual-line span {
+    position: absolute;
+    top: 8px;
+    left: 5px;
+    white-space: nowrap;
+    color: #fff;
+    font: 8px monospace;
+    background: rgba(57, 134, 255, .8);
+    padding: 4px 6px;
+    border-radius: 3px;
+}
+
+/* CONTROLES PARA CARGAR VIDEOS */
+
+.camera-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding: 13px 14px;
+    border-bottom: 1px solid #e1e8f0;
+}
+
+.camera-controls label {
+    color: #536985;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.camera-controls input[type="file"] {
+    width: 100%;
+    max-width: 100%;
+    padding: 9px;
+    border: 1px solid #d0dbea;
+    border-radius: 7px;
+    background: #f8fafc;
+    color: #536985;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+}
+
+.camera-controls input[type="file"]::file-selector-button {
+    padding: 7px 10px;
+    margin-right: 10px;
+    border: 0;
+    border-radius: 5px;
+    background: #e8f1ff;
+    color: #286ac2;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* ESTADÍSTICAS DE CÁMARAS */
+
+.camera-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 14px;
+}
+
+.stat {
+    min-width: 0;
+    min-height: 58px;
+    padding: 11px;
+    border-radius: 7px;
+    background: #f6f8fb;
+}
+
+.stat span {
+    display: block;
+    margin-bottom: 7px;
+    color: #536985;
+    font-size: 10px;
+}
+
+.stat strong {
+    font: bold 16px monospace;
+    overflow-wrap: anywhere;
+}
+
+/* PANEL DE ANÁLISIS */
+
+.analysis-card {
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    background: #fff;
+    border: 1px solid #d0dbea;
+    border-radius: 11px;
+}
+
+.analysis-card h3 {
+    margin: 0 0 17px;
+    color: #344c6b;
+    font: 10px monospace;
+    letter-spacing: 1.3px;
+}
+
+.analysis-flow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.flow-box {
+    flex: 1 1 0;
+    min-width: 100px;
+    min-height: 84px;
+    padding: 12px 7px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid #d0dbea;
+    border-radius: 8px;
+}
+
+.flow-box span,
+.flow-box p {
+    font: 9px monospace;
+    color: #536985;
+}
+
+.flow-box p {
+    margin: 5px 0 8px;
+}
+
+.flow-box strong {
+    font: bold 18px monospace;
+    color: #0d2039;
+}
+
+.flow-box.decision strong {
+    font-size: 15px;
+}
+
+.operator,
+.versus {
+    color: #c4d0df;
+    font-size: 15px;
+}
+
+/* TARJETA DE DECISIÓN */
+
+.decision-card {
+    padding: 22px 24px 20px;
+    border: 1px solid #d0dbea;
+    border-radius: 11px;
+    background: #fff;
+    color: #344c6b;
+}
+
+.decision-card h2 {
+    margin: 0 0 12px;
+    font-size: 17px;
+}
+
+.decision-card p {
+    margin: 0 0 12px;
+    color: #536985;
+    font-size: 12px;
+}
+
+.voice-message {
+    padding: 10px 13px;
+    border-radius: 7px;
+    background: #f0f4fa;
+    color: #536985;
+    font: 10px monospace;
+}
+
+/* PIE DE PÁGINA */
+
+footer {
+    padding: 18px 0 5px;
+    text-align: center;
+    color: #7b899d;
+    font-size: 11px;
+}
+
+/* ADAPTACIÓN A TABLETS */
+
+@media (max-width: 1100px) {
+    .camera-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .analysis-flow {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .flow-box {
+        flex: 1 1 130px;
+    }
+}
+
+/* ADAPTACIÓN A CELULARES */
+
+@media (max-width: 760px) {
+    .sidebar {
+        position: static;
+        width: 100%;
+    }
+
+    nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sidebar-bottom {
+        margin-top: 0;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .camera-view {
+        height: 220px;
+    }
+
+    .camera-header {
+        flex-wrap: wrap;
+    }
+
+    .analysis-card {
+        padding: 17px;
+    }
+}
+
+@media (max-width: 420px) {
+    .camera-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .camera-view {
+        height: 190px;
+    }
+}

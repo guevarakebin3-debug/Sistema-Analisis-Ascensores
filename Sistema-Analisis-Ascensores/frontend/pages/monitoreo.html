@@ -1,0 +1,2969 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoreo | AforoVisión</title>
+    <link rel="stylesheet" href="../styles/monitoreo.css">
+
+    <style>
+        .video-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .btn-eliminar-video {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .btn-eliminar-video:hover {
+            background: #b02a37;
+            transform: translateY(-1px);
+        }
+
+        .btn-eliminar-video:disabled {
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .video-guardado {
+            display: block;
+            margin-top: 8px;
+            color: #198754;
+            overflow-wrap: anywhere;
+        }
+
+        .video-mensaje-accion {
+            min-height: 18px;
+            margin: 8px 0 0;
+            font-size: 12px;
+        }
+
+        .video-mensaje-accion.exito {
+            color: #198754;
+        }
+
+        .video-mensaje-accion.error {
+            color: #b42318;
+        }
+
+        .dialogo-eliminar-video {
+            width: min(420px, calc(100% - 32px));
+            padding: 24px;
+            border: 1px solid #d0dbea;
+            border-radius: 12px;
+            color: #172a43;
+            box-shadow: 0 16px 48px rgba(15, 23, 42, .24);
+        }
+
+        .dialogo-eliminar-video::backdrop {
+            background: rgba(15, 23, 42, .48);
+        }
+
+        .dialogo-eliminar-video h2 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+
+        .dialogo-eliminar-video p {
+            margin: 0;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .dialogo-eliminar-video .acciones {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .dialogo-eliminar-video button {
+            padding: 9px 14px;
+            border: 0;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .dialogo-eliminar-video .cancelar {
+            color: #263d55;
+            background: #e8eef5;
+        }
+
+        .dialogo-eliminar-video .confirmar {
+            color: #fff;
+            background: #dc3545;
+        }
+
+        .decision-pendiente {
+            color: #d69b32;
+        }
+
+        .decision-permitida {
+            color: #198754;
+        }
+
+        .decision-rechazada {
+            color: #dc3545;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="logo">▤</div>
+            <div>
+                <h2>ELEVADOR</h2>
+                <p>v2.4 · Admin</p>
+            </div>
+        </div>
+
+        <nav>
+            <a href="dashboard.html"><span>▦</span> Dashboard</a>
+            <a class="active" href="monitoreo.html"><span>▣</span> Monitoreo</a>
+            <a href="configuracion.html" target="_blank"><span>⚙</span> Configuración</a>
+            <a href="estado-camaras.html" target="_blank"><span>⇥</span> Estado de cámaras</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="general-status">
+                <small>ESTADO GENERAL</small>
+                <p><span class="dot"></span> Sistema operativo</p>
+            </div>
+            <a class="logout" href="login.html" id="btnCerrarSesion">⇥ Cerrar sesión</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>Monitoreo en tiempo real</h1>
+            <p>El sistema analiza automáticamente los videos de las cámaras.</p>
+        </header>
+
+        <section class="camera-grid">
+
+            <!-- CÁMARA INTERIOR -->
+            <article class="camera-card">
+
+                <header class="camera-header">
+                    <h2>
+                        <span class="camera-icon">▱</span>
+                        Cámara 1 – Interior (Cabina)
+                    </h2>
+                    <span class="camera-status">
+                        <i></i> OPERATIVA
+                    </span>
+                </header>
+
+                <div class="camera-view interior">
+
+                    <video
+                        id="video-camara-1"
+                        class="camera-video"
+                        controls
+                        muted
+                        playsinline>
+                    </video>
+
+                    <canvas
+                        id="overlay-camara-1"
+                        class="detection-overlay">
+                    </canvas>
+
+                    <div class="recording">REC <i></i> VIDEO</div>
+                    <span class="view-label">CABINA INTERIOR · CAM1</span>
+                </div>
+
+                <div class="camera-controls">
+
+                    <label for="archivo-camara-1">
+                        Seleccionar video de la cámara interior
+                    </label>
+
+                    <input
+                        type="file"
+                        id="archivo-camara-1"
+                        accept="video/mp4,video/webm,video/ogg">
+
+                    <div class="video-actions">
+                        <button
+                            type="button"
+                            class="btn-eliminar-video"
+                            id="eliminar-video-camara-1"
+                            disabled>
+                            🗑 Eliminar video
+                        </button>
+                    </div>
+                    <p class="video-mensaje-accion" id="mensaje-video-camara-1" role="status" aria-live="polite"></p>
+
+                </div>
+
+                <div class="camera-stats">
+
+                    <div class="stat">
+                        <span>Personas detectadas</span>
+                        <strong id="personas-camara-1">0</strong>
+                    </div>
+
+                    <div class="stat">
+                        <span>Objetos detectados</span>
+                        <strong id="objetos-camara-1">0</strong>
+                    </div>
+
+                    <div class="stat">
+                        <span>Ocupación actual</span>
+                        <strong id="ocupacion-camara-1">--</strong>
+                    </div>
+
+                    <div class="stat">
+                        <span>Espacio ocupado</span>
+                        <strong id="espacio-camara-1">-- m²</strong>
+                    </div>
+
+                </div>
+            </article>
+
+            <!-- CÁMARA EXTERIOR -->
+            <article class="camera-card">
+
+                <header class="camera-header">
+                    <h2>
+                        <span class="camera-icon">▱</span>
+                        Cámara 2 – Exterior (Acceso)
+                    </h2>
+                    <span class="camera-status">
+                        <i></i> OPERATIVA
+                    </span>
+                </header>
+
+                <div class="camera-view exterior">
+
+                    <video
+                        id="video-camara-2"
+                        class="camera-video"
+                        controls
+                        muted
+                        playsinline>
+                    </video>
+
+                    <canvas
+                        id="overlay-camara-2"
+                        class="detection-overlay">
+                    </canvas>
+
+                    <div class="recording">REC <i></i> VIDEO</div>
+
+                    <div class="virtual-line">
+                        <span>LÍNEA VIRTUAL</span>
+                    </div>
+
+                    <span class="view-label">CÁMARA EXTERIOR · CAM2</span>
+                </div>
+
+                <div class="camera-controls">
+
+                    <label for="archivo-camara-2">
+                        Seleccionar video de la cámara exterior
+                    </label>
+
+                    <input
+                        type="file"
+                        id="archivo-camara-2"
+                        accept="video/mp4,video/webm,video/ogg">
+
+                    <div class="video-actions">
+                        <button
+                            type="button"
+                            class="btn-eliminar-video"
+                            id="eliminar-video-camara-2"
+                            disabled>
+                            🗑 Eliminar video
+                        </button>
+                    </div>
+                    <p class="video-mensaje-accion" id="mensaje-video-camara-2" role="status" aria-live="polite"></p>
+
+                </div>
+
+                <div class="camera-stats">
+
+                    <div class="stat">
+                        <span>Personas detectadas</span>
+                        <strong id="personas-camara-2">0</strong>
+                    </div>
+
+                    <div class="stat">
+                        <span>Objetos detectados</span>
+                        <strong id="objetos-camara-2">0</strong>
+                    </div>
+
+                    <div class="stat">
+                        <span>Dirección</span>
+                        <strong id="direccion-camara-2">Sin movimiento</strong>
+                    </div>
+
+                    <div class="stat">
+                        <span>Ingresos registrados</span>
+                        <strong id="ingreso-camara-2">0 ingresos</strong>
+                    </div>
+
+                </div>
+            </article>
+
+        </section>
+
+        <!-- ANÁLISIS DEL SISTEMA -->
+        <section class="analysis-card">
+
+            <h3>SISTEMA DE ANÁLISIS</h3>
+
+            <div class="analysis-flow">
+
+                <div class="flow-box">
+                    <span>Cám 1</span>
+                    <p>Ocupación actual</p>
+                    <strong id="analisis-ocupacion">--</strong>
+                </div>
+
+                <b class="operator">+</b>
+
+                <div class="flow-box">
+                    <span>Cám 2</span>
+                    <p>Espacio del ingreso</p>
+                    <strong id="analisis-ingreso">--</strong>
+                </div>
+
+                <b class="operator">=</b>
+
+                <div class="flow-box">
+                    <span>Sistema</span>
+                    <p>Ocupación proyectada</p>
+                    <strong id="analisis-proyectado">--</strong>
+                </div>
+
+                <b class="versus">VS</b>
+
+                <div class="flow-box">
+                    <span>Config.</span>
+                    <p>Límite configurado</p>
+                    <strong id="analisis-limite">80%</strong>
+                </div>
+
+                <b class="operator">→</b>
+
+                <div class="flow-box decision">
+                    <span>Decisión</span>
+                    <p>Automática del sistema</p>
+                    <strong id="analisis-decision">Esperando</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- DECISIÓN -->
+        <section class="decision-card">
+
+            <h2 id="estado-analisis">
+                <span class="dot"></span>
+                ESPERANDO ANÁLISIS
+            </h2>
+
+            <p id="detalle-analisis">
+                Selecciona y reproduce los videos de las cámaras para iniciar el monitoreo.
+            </p>
+
+            <div class="voice-message" id="mensaje-analisis">
+                🔊 MENSAJE DE VOZ: Esperando análisis.
+            </div>
+
+        </section>
+
+        <footer>
+            AforoVisión · Monitoreo de ocupación en ascensores
+        </footer>
+
+    </main>
+
+    <dialog
+        class="dialogo-eliminar-video"
+        id="dialogo-eliminar-video"
+        aria-labelledby="titulo-dialogo-eliminar-video"
+        aria-describedby="texto-dialogo-eliminar-video">
+        <h2 id="titulo-dialogo-eliminar-video">¿Eliminar este video?</h2>
+        <p id="texto-dialogo-eliminar-video"></p>
+        <div class="acciones">
+            <button type="button" class="cancelar" id="cancelar-eliminar-video">
+                Cancelar
+            </button>
+            <button type="button" class="confirmar" id="confirmar-eliminar-video">
+                Sí, eliminar
+            </button>
+        </div>
+    </dialog>
+
+    <script>
+
+        // =====================================================
+        // PROTECCIÓN DE SESIÓN
+        // =====================================================
+
+        const token = sessionStorage.getItem("aforovision_token");
+
+        if (!token) {
+            window.top.location.replace("login.html");
+        }
+
+        // =====================================================
+        // CONFIGURACIÓN GENERAL
+        // =====================================================
+
+        const API_URL = "http://127.0.0.1:8000/api";
+
+        const NOMBRE_BD = "AforoVisionVideos";
+        const VERSION_BD = 1;
+        const ALMACEN_VIDEOS = "videos";
+
+        const CLAVE_CONFIGURACION = "aforovision_configuracion";
+        const CLAVE_DASHBOARD = "aforovision_estado_monitoreo";
+        const CLAVE_VIDEO = "aforovision_estado_video_";
+
+        const INTERVALO_ANALISIS_MS = 50;
+
+        let configuracion = {
+            capacidad: 10,
+            limite: 80,
+            area: 3.5,
+            linea: 50
+        };
+
+        let baseDatos = null;
+
+        const urlsVideos = {};
+
+        const procesando = {
+            "camara-1": false,
+            "camara-2": false
+        };
+
+        const analisisActivo = {
+            "camara-1": false,
+            "camara-2": false
+        };
+
+        const temporizadores = {};
+
+        const estadoDeseadoReproduccion = {
+            "camara-1": false,
+            "camara-2": false
+        };
+
+        const restaurandoVideo = {
+            "camara-1": false,
+            "camara-2": false
+        };
+
+        // Eventos que ya recibieron un anuncio de voz.
+        const eventosConVoz = new Set();
+
+        // Evaluaciones ya aplicadas, aunque la voz no esté disponible.
+        const evaluacionesProcesadas = new Set();
+
+        // Cruces que ya fueron contabilizados.
+        const crucesProcesados = new Set();
+
+        // Contador de respaldo para eventos sin identificador del backend.
+        let contadorEventosLocal = 0;
+
+        let videoPendienteEliminar = null;
+
+        // Última evaluación válida de ingreso.
+        let ultimaEvaluacionIngreso = null;
+
+        // =====================================================
+        // DATOS DE LAS CÁMARAS
+        // =====================================================
+
+        const datosCamaras = {
+
+            interior: {
+                personas: 0,
+                objetos: 0,
+                porcentajeEspacial: null,
+                superficieM2: null,
+                medicionDisponible: false
+            },
+
+            exterior: {
+                personas: 0,
+                objetos: 0,
+                entradas: 0,
+                ultimaPersonaEvaluada: null,
+                porcentajeAdicional: null,
+                porcentajeProyectado: null,
+                decisionDisponible: false
+            }
+
+        };
+
+        // =====================================================
+        // PROTECCIÓN DE CIERRE DE SESIÓN
+        // =====================================================
+
+        document.getElementById("btnCerrarSesion")
+            .addEventListener("click", function(evento) {
+
+                evento.preventDefault();
+
+                guardarTodosLosVideos();
+
+                sessionStorage.removeItem("aforovision_token");
+                sessionStorage.removeItem("aforovision_usuario");
+
+                window.top.location.replace("login.html");
+
+            });
+
+        // =====================================================
+        // NORMALIZAR CONFIGURACIÓN
+        // =====================================================
+
+        function normalizarConfiguracion(datos) {
+
+            return {
+
+                capacidad: Number(datos.capacidad) > 0
+                    ? Number(datos.capacidad)
+                    : 10,
+
+                limite: Number(datos.limite) > 0
+                    ? Math.min(100, Number(datos.limite))
+                    : 80,
+
+                area: Number(datos.area) > 0
+                    ? Number(datos.area)
+                    : 3.5,
+
+                linea: Number.isFinite(Number(datos.linea))
+                    ? Math.min(100, Math.max(0, Number(datos.linea)))
+                    : 50
+
+            };
+
+        }
+
+        // =====================================================
+        // CARGAR CONFIGURACIÓN
+        // =====================================================
+
+        function cargarConfiguracion() {
+
+            try {
+
+                const guardada = localStorage.getItem(
+                    CLAVE_CONFIGURACION
+                );
+
+                if (guardada) {
+
+                    configuracion = normalizarConfiguracion(
+                        JSON.parse(guardada)
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Error al cargar la configuración:",
+                    error
+                );
+
+            }
+
+            actualizarLineaVisual();
+            actualizarAnalisis();
+
+        }
+
+        // =====================================================
+        // ACTUALIZAR LÍNEA VIRTUAL
+        // =====================================================
+
+        function actualizarLineaVisual() {
+
+            const linea = document.querySelector(".virtual-line");
+            const vista = document.querySelector(".camera-view.exterior");
+            const video = document.getElementById("video-camara-2");
+
+            if (!linea || !vista) return;
+
+            if (!video?.videoWidth || !video?.videoHeight) {
+                linea.style.left = `${configuracion.linea}%`;
+                return;
+            }
+
+            const escala = Math.min(
+                vista.clientWidth / video.videoWidth,
+                vista.clientHeight / video.videoHeight
+            );
+
+            const anchoVideo = video.videoWidth * escala;
+            const desplazamientoX =
+                (vista.clientWidth - anchoVideo) / 2;
+
+            linea.style.left =
+                `${desplazamientoX + anchoVideo * configuracion.linea / 100}px`;
+
+        }
+
+        const videoExterior = document.getElementById("video-camara-2");
+
+        videoExterior.addEventListener(
+            "loadedmetadata",
+            actualizarLineaVisual
+        );
+
+        window.addEventListener("resize", actualizarLineaVisual);
+
+        // =====================================================
+        // ACTUALIZAR CONFIGURACIÓN AUTOMÁTICAMENTE
+        // =====================================================
+
+        window.addEventListener("storage", function(evento) {
+
+            if (evento.key !== CLAVE_CONFIGURACION) return;
+            if (!evento.newValue) return;
+
+            try {
+
+                configuracion = normalizarConfiguracion(
+                    JSON.parse(evento.newValue)
+                );
+
+                actualizarLineaVisual();
+                actualizarAnalisis();
+                publicarDatosDashboard();
+
+            } catch (error) {
+
+                console.error(
+                    "Error al actualizar configuración:",
+                    error
+                );
+
+            }
+
+        });
+
+        // =====================================================
+        // ESTADO DE LOS VIDEOS
+        // =====================================================
+
+        function obtenerClaveVideo(id) {
+            return CLAVE_VIDEO + id;
+        }
+
+        function guardarEstadoVideo(id) {
+
+            const video = document.getElementById(`video-${id}`);
+
+            if (!video || !video.src) return;
+
+            const estado = {
+
+                currentTime: video.currentTime || 0,
+
+                reproduciendo:
+                    estadoDeseadoReproduccion[id] &&
+                    !video.paused &&
+                    !video.ended,
+
+                nombre: video.dataset.nombreVideo || ""
+
+            };
+
+            try {
+
+                localStorage.setItem(
+                    obtenerClaveVideo(id),
+                    JSON.stringify(estado)
+                );
+
+            } catch (error) {
+
+                console.error(
+                    `No se pudo guardar el estado de ${id}:`,
+                    error
+                );
+
+            }
+
+        }
+
+        function recuperarEstadoVideo(id) {
+
+            try {
+
+                const guardado = localStorage.getItem(
+                    obtenerClaveVideo(id)
+                );
+
+                return guardado ? JSON.parse(guardado) : null;
+
+            } catch (error) {
+
+                console.error(
+                    `No se pudo recuperar ${id}:`,
+                    error
+                );
+
+                return null;
+
+            }
+
+        }
+
+        function borrarEstadoVideo(id) {
+
+            localStorage.removeItem(obtenerClaveVideo(id));
+
+            estadoDeseadoReproduccion[id] = false;
+
+        }
+
+        function restaurarPosicionVideo(id) {
+
+            const video = document.getElementById(`video-${id}`);
+
+            const estado = recuperarEstadoVideo(id);
+
+            if (!video || !estado) {
+                restaurandoVideo[id] = false;
+                return;
+            }
+
+            const nombreActual = video.dataset.nombreVideo || "";
+
+            if (
+                estado.nombre &&
+                nombreActual &&
+                estado.nombre !== nombreActual
+            ) {
+
+                borrarEstadoVideo(id);
+                restaurandoVideo[id] = false;
+                return;
+
+            }
+
+            restaurandoVideo[id] = true;
+
+            const posicion = Number(estado.currentTime) || 0;
+
+            if (
+                Number.isFinite(video.duration) &&
+                video.duration > 0
+            ) {
+
+                video.currentTime = Math.min(
+                    posicion,
+                    Math.max(0, video.duration - 0.1)
+                );
+
+            }
+
+            estadoDeseadoReproduccion[id] = false;
+            restaurandoVideo[id] = false;
+
+        }
+
+        // =====================================================
+        // BASE DE DATOS INDEXEDDB
+        // =====================================================
+
+        function abrirBaseDatos() {
+
+            return new Promise((resolve, reject) => {
+
+                const solicitud = indexedDB.open(
+                    NOMBRE_BD,
+                    VERSION_BD
+                );
+
+                solicitud.onupgradeneeded = (evento) => {
+
+                    const bd = evento.target.result;
+
+                    if (!bd.objectStoreNames.contains(ALMACEN_VIDEOS)) {
+
+                        bd.createObjectStore(ALMACEN_VIDEOS, {
+                            keyPath: "id"
+                        });
+
+                    }
+
+                };
+
+                solicitud.onsuccess = () => {
+
+                    baseDatos = solicitud.result;
+
+                    baseDatos.onversionchange = () => {
+                        baseDatos.close();
+                    };
+
+                    resolve(baseDatos);
+
+                };
+
+                solicitud.onerror = () => reject(solicitud.error);
+
+            });
+
+        }
+
+        function guardarVideo(id, archivo) {
+
+            return new Promise((resolve, reject) => {
+
+                const transaccion = baseDatos.transaction(
+                    ALMACEN_VIDEOS,
+                    "readwrite"
+                );
+
+                transaccion.objectStore(ALMACEN_VIDEOS).put({
+
+                    id: id,
+                    archivo: archivo,
+                    nombre: archivo.name,
+                    tipo: archivo.type
+
+                });
+
+                transaccion.oncomplete = () => resolve();
+                transaccion.onerror = () => reject(transaccion.error);
+                transaccion.onabort = () => reject(transaccion.error);
+
+            });
+
+        }
+
+        function recuperarVideo(id) {
+
+            return new Promise((resolve, reject) => {
+
+                const transaccion = baseDatos.transaction(
+                    ALMACEN_VIDEOS,
+                    "readonly"
+                );
+
+                const solicitud = transaccion
+                    .objectStore(ALMACEN_VIDEOS)
+                    .get(id);
+
+                solicitud.onsuccess = () => {
+                    resolve(solicitud.result || null);
+                };
+
+                solicitud.onerror = () => reject(solicitud.error);
+
+            });
+
+        }
+
+        function eliminarVideoBD(id) {
+
+            return new Promise((resolve, reject) => {
+
+                const transaccion = baseDatos.transaction(
+                    ALMACEN_VIDEOS,
+                    "readwrite"
+                );
+
+                transaccion.objectStore(ALMACEN_VIDEOS).delete(id);
+
+                transaccion.oncomplete = () => resolve();
+                transaccion.onerror = () => reject(transaccion.error);
+                transaccion.onabort = () => reject(transaccion.error);
+
+            });
+
+        }
+
+        // =====================================================
+        // REINICIAR SEGUIMIENTO EN EL MICROSERVICIO
+        // =====================================================
+
+        async function reiniciarSeguimiento(camaraId) {
+
+            const respuesta = await fetch(
+                `${API_URL}/vision/reiniciar?camara_id=${encodeURIComponent(camaraId)}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (!respuesta.ok) {
+
+                const detalle = await respuesta.text();
+
+                throw new Error(
+                    `No se pudo reiniciar el seguimiento (${respuesta.status}): ${detalle}`
+                );
+
+            }
+
+            return await respuesta.json();
+
+        }
+
+        // =====================================================
+        // REINICIAR SESIÓN DE EVENTOS EXTERIORES
+        // =====================================================
+
+        function reiniciarEventosExterior() {
+
+            eventosConVoz.clear();
+            crucesProcesados.clear();
+
+            contadorEventosLocal = 0;
+
+            if ("speechSynthesis" in window) {
+                window.speechSynthesis.cancel();
+            }
+
+        }
+
+        // =====================================================
+        // MOSTRAR VIDEOS
+        // =====================================================
+
+        function mostrarVideo(id, archivo, nombre) {
+
+            const video = document.getElementById(`video-${id}`);
+
+            if (!video) return;
+
+            detenerAnalisis(id);
+            limpiarDetecciones(id);
+
+            estadoDeseadoReproduccion[id] = false;
+
+            video.pause();
+
+            if (urlsVideos[id]) {
+                URL.revokeObjectURL(urlsVideos[id]);
+            }
+
+            urlsVideos[id] = URL.createObjectURL(archivo);
+
+            video.dataset.nombreVideo = nombre;
+            video.dataset.sesionIniciada = "false";
+
+            video.src = urlsVideos[id];
+            video.load();
+
+            const input = document.getElementById(`archivo-${id}`);
+            const controles = input.parentElement;
+
+            let mensaje = controles.querySelector(".video-guardado");
+
+            if (!mensaje) {
+
+                mensaje = document.createElement("small");
+                mensaje.className = "video-guardado";
+
+                controles.appendChild(mensaje);
+
+            }
+
+            mensaje.textContent = `Video guardado: ${nombre}`;
+
+            const boton = document.getElementById(
+                `eliminar-video-${id}`
+            );
+
+            if (boton) boton.disabled = false;
+
+        }
+
+        // =====================================================
+        // REINICIAR DATOS DE OCUPACIÓN INTERIOR
+        // =====================================================
+
+        function reiniciarCamaraInterior() {
+
+            datosCamaras.interior = {
+
+                personas: 0,
+                objetos: 0,
+                porcentajeEspacial: null,
+                superficieM2: null,
+                medicionDisponible: false
+
+            };
+
+            document.getElementById(
+                "personas-camara-1"
+            ).textContent = "0";
+
+            document.getElementById(
+                "objetos-camara-1"
+            ).textContent = "0";
+
+            document.getElementById(
+                "ocupacion-camara-1"
+            ).textContent = "--";
+
+            document.getElementById(
+                "espacio-camara-1"
+            ).textContent = "-- m²";
+
+            actualizarAnalisis();
+
+        }
+
+        // =====================================================
+        // REINICIAR DATOS EXTERIORES
+        // =====================================================
+
+        function reiniciarConteoExterior() {
+
+            datosCamaras.exterior = {
+
+                personas: 0,
+                objetos: 0,
+                entradas: 0,
+                ultimaPersonaEvaluada: null,
+                porcentajeAdicional: null,
+                porcentajeProyectado: null,
+                decisionDisponible: false
+
+            };
+
+            ultimaEvaluacionIngreso = null;
+
+            reiniciarEventosExterior();
+
+            document.getElementById(
+                "personas-camara-2"
+            ).textContent = "0";
+
+            document.getElementById(
+                "objetos-camara-2"
+            ).textContent = "0";
+
+            document.getElementById(
+                "ingreso-camara-2"
+            ).textContent = "0 ingresos";
+
+            document.getElementById(
+                "direccion-camara-2"
+            ).textContent = "Sin movimiento";
+
+            actualizarAnalisis();
+
+        }
+
+        // =====================================================
+        // ELIMINAR VIDEO COMPLETAMENTE
+        // =====================================================
+
+        function mostrarMensajeVideo(id, texto, tipo) {
+
+            const mensaje = document.getElementById(
+                `mensaje-video-${id}`
+            );
+
+            if (!mensaje) return;
+
+            mensaje.textContent = texto;
+            mensaje.className = `video-mensaje-accion ${tipo}`;
+
+        }
+
+        function solicitarEliminarVideo(id) {
+
+            const video = document.getElementById(`video-${id}`);
+
+            if (!video || !video.dataset.nombreVideo) return;
+
+            videoPendienteEliminar = id;
+
+            const camara = id === "camara-1"
+                ? "cámara interior"
+                : "cámara exterior";
+
+            document.getElementById(
+                "texto-dialogo-eliminar-video"
+            ).textContent =
+                `Se eliminará "${video.dataset.nombreVideo}" de la ${camara} y se reiniciarán sus estadísticas.`;
+
+            document.getElementById(
+                "dialogo-eliminar-video"
+            ).showModal();
+
+            document.getElementById(
+                "cancelar-eliminar-video"
+            ).focus();
+
+        }
+
+        async function eliminarVideo(id) {
+
+            const video = document.getElementById(`video-${id}`);
+            const input = document.getElementById(`archivo-${id}`);
+
+            if (!video) return;
+
+            const boton = document.getElementById(
+                `eliminar-video-${id}`
+            );
+
+            try {
+
+                if (boton) boton.disabled = true;
+
+                detenerAnalisis(id);
+
+                estadoDeseadoReproduccion[id] = false;
+
+                video.pause();
+
+                borrarEstadoVideo(id);
+
+                video.removeAttribute("src");
+                video.load();
+
+                delete video.dataset.nombreVideo;
+                delete video.dataset.sesionIniciada;
+
+                if (urlsVideos[id]) {
+
+                    URL.revokeObjectURL(urlsVideos[id]);
+
+                    delete urlsVideos[id];
+
+                }
+
+                input.value = "";
+
+                const mensaje = input.parentElement.querySelector(
+                    ".video-guardado"
+                );
+
+                if (mensaje) mensaje.remove();
+
+                await eliminarVideoBD(id);
+
+                if (id === "camara-1") {
+
+                    reiniciarCamaraInterior();
+                    await reiniciarSeguimiento("interior");
+
+                } else if (id === "camara-2") {
+
+                    reiniciarConteoExterior();
+                    await reiniciarSeguimiento("exterior");
+
+                }
+
+                limpiarDetecciones(id);
+
+                actualizarAnalisis();
+                publicarDatosDashboard();
+
+                console.log(`Video de ${id} eliminado correctamente.`);
+
+                mostrarMensajeVideo(
+                    id,
+                    "El video se eliminó correctamente.",
+                    "exito"
+                );
+
+            } catch (error) {
+
+                console.error(
+                    `Error al eliminar el video de ${id}:`,
+                    error
+                );
+
+                mostrarMensajeVideo(
+                    id,
+                    "No se pudo completar la eliminación. Revisa la consola para ver el error.",
+                    "error"
+                );
+
+                if (boton) {
+                    boton.disabled = !video.dataset.nombreVideo;
+                }
+
+            }
+
+        }
+
+        // =====================================================
+        // CONFIGURAR BOTONES DE ELIMINACIÓN
+        // =====================================================
+
+        function configurarBotonesEliminar() {
+
+            const dialogo = document.getElementById(
+                "dialogo-eliminar-video"
+            );
+
+            document.getElementById(
+                "confirmar-eliminar-video"
+            ).addEventListener("click", async function() {
+
+                const id = videoPendienteEliminar;
+
+                dialogo.close();
+
+                if (id) {
+                    await eliminarVideo(id);
+                }
+
+            });
+
+            document.getElementById(
+                "cancelar-eliminar-video"
+            ).addEventListener("click", function() {
+
+                dialogo.close();
+
+            });
+
+            dialogo.addEventListener("close", function() {
+
+                videoPendienteEliminar = null;
+
+            });
+
+            document.getElementById(
+                "eliminar-video-camara-1"
+            ).addEventListener("click", function() {
+
+                solicitarEliminarVideo("camara-1");
+
+            });
+
+            document.getElementById(
+                "eliminar-video-camara-2"
+            ).addEventListener("click", function() {
+
+                solicitarEliminarVideo("camara-2");
+
+            });
+
+        }
+
+        // =====================================================
+        // OBTENER DETECCIONES
+        // =====================================================
+
+        function obtenerListaDetecciones(resultado) {
+
+            if (Array.isArray(resultado.detecciones)) {
+                return resultado.detecciones;
+            }
+
+            if (Array.isArray(resultado.objetos)) {
+                return resultado.objetos;
+            }
+
+            if (Array.isArray(resultado.personas)) {
+                return resultado.personas;
+            }
+
+            return [];
+
+        }
+
+        function obtenerClase(objeto) {
+
+            return String(
+                objeto.clase ??
+                objeto.nombre ??
+                objeto.class_name ??
+                objeto.label ??
+                objeto.name ??
+                ""
+            ).toLowerCase();
+
+        }
+
+        function esPersona(objeto) {
+
+            const tipo = String(
+                objeto.tipo ?? ""
+            ).toLowerCase();
+
+            if (tipo === "persona" || tipo === "person") {
+                return true;
+            }
+
+            if (tipo === "objeto") {
+                return false;
+            }
+
+            const clase = obtenerClase(objeto);
+
+            return (
+                clase === "person" ||
+                clase === "persona" ||
+                clase === "0"
+            );
+
+        }
+
+        function contarPersonas(resultado, detecciones) {
+
+            const personas = detecciones.filter(esPersona).length;
+
+            if (detecciones.length > 0) return personas;
+
+            const cantidad =
+                resultado.personas_detectadas ??
+                resultado.cantidad_detectada ??
+                resultado.total_personas ??
+                0;
+
+            return Number(cantidad) || 0;
+
+        }
+
+        function contarOtrosObjetos(detecciones) {
+
+            return detecciones.filter(
+                objeto => !esPersona(objeto)
+            ).length;
+
+        }
+
+        // =====================================================
+        // CONVERTIR VALOR A NÚMERO VÁLIDO
+        // =====================================================
+
+        function numeroValido(valor) {
+
+            if (
+                valor === null ||
+                valor === undefined ||
+                valor === ""
+            ) {
+                return null;
+            }
+
+            const numero = Number(valor);
+
+            return Number.isFinite(numero) ? numero : null;
+
+        }
+
+        // =====================================================
+        // OBTENER PORCENTAJE ESPACIAL
+        // =====================================================
+
+        function obtenerPorcentajeEspacial(resultado) {
+
+            // No utilizar porcentajes genéricos que podrían representar
+            // el área ocupada en píxeles de la imagen.
+            const posiblesValores = [
+
+                resultado.porcentaje_ocupacion_espacial,
+
+                resultado.porcentaje_espacial_calibrado,
+
+                resultado.porcentaje_ocupacion_calibrado
+
+            ];
+
+            for (const valor of posiblesValores) {
+
+                const numero = numeroValido(valor);
+
+                if (
+                    numero !== null &&
+                    numero >= 0 &&
+                    numero <= 100
+                ) {
+                    return numero;
+                }
+
+            }
+
+            return null;
+
+        }
+
+        // =====================================================
+        // DIBUJAR MÁSCARAS Y DETECCIONES
+        // =====================================================
+
+        function dibujarDetecciones(id, resultado) {
+
+            const video = document.getElementById(`video-${id}`);
+            const canvas = document.getElementById(`overlay-${id}`);
+
+            if (!video || !canvas) return;
+
+            const contexto = canvas.getContext("2d");
+
+            const ancho = canvas.clientWidth;
+            const alto = canvas.clientHeight;
+
+            const escalaDPI = window.devicePixelRatio || 1;
+
+            canvas.width = Math.round(ancho * escalaDPI);
+            canvas.height = Math.round(alto * escalaDPI);
+
+            contexto.setTransform(
+                escalaDPI, 0, 0, escalaDPI, 0, 0
+            );
+
+            contexto.clearRect(0, 0, ancho, alto);
+
+            if (
+                !video.videoWidth ||
+                !video.videoHeight ||
+                !ancho ||
+                !alto
+            ) return;
+
+            const detecciones = obtenerListaDetecciones(resultado);
+
+            const escala = Math.min(
+                ancho / video.videoWidth,
+                alto / video.videoHeight
+            );
+
+            const anchoVideo = video.videoWidth * escala;
+            const altoVideo = video.videoHeight * escala;
+
+            const desplazamientoX = (ancho - anchoVideo) / 2;
+            const desplazamientoY = (alto - altoVideo) / 2;
+
+            for (const objeto of detecciones) {
+
+                const posicion = objeto.posicion;
+
+                if (!posicion) continue;
+
+                const x1 = Number(posicion.x1);
+                const y1 = Number(posicion.y1);
+                const x2 = Number(posicion.x2);
+                const y2 = Number(posicion.y2);
+
+                if (![x1, y1, x2, y2].every(Number.isFinite)) {
+                    continue;
+                }
+
+                const izquierda = desplazamientoX + x1 * escala;
+                const arriba = desplazamientoY + y1 * escala;
+                const derecha = desplazamientoX + x2 * escala;
+                const abajo = desplazamientoY + y2 * escala;
+
+                const anchoCaja = derecha - izquierda;
+                const altoCaja = abajo - arriba;
+
+                if (anchoCaja <= 0 || altoCaja <= 0) continue;
+
+                const esPersonaDetectada = esPersona(objeto);
+
+                // Máscara de segmentación.
+                const mascara = objeto.mascara;
+
+                if (Array.isArray(mascara) && mascara.length >= 3) {
+
+                    const puntos = mascara.map(punto => {
+
+                        if (Array.isArray(punto)) {
+                            return {
+                                x: Number(punto[0]),
+                                y: Number(punto[1])
+                            };
+                        }
+
+                        return {
+                            x: Number(punto.x),
+                            y: Number(punto.y)
+                        };
+
+                    }).filter(punto =>
+                        Number.isFinite(punto.x) &&
+                        Number.isFinite(punto.y)
+                    );
+
+                    if (puntos.length >= 3) {
+
+                        const color = esPersonaDetectada
+                            ? "70, 190, 150"
+                            : "235, 165, 75";
+
+                        contexto.beginPath();
+
+                        contexto.moveTo(
+                            desplazamientoX + puntos[0].x * escala,
+                            desplazamientoY + puntos[0].y * escala
+                        );
+
+                        for (let i = 1; i < puntos.length; i++) {
+
+                            contexto.lineTo(
+                                desplazamientoX + puntos[i].x * escala,
+                                desplazamientoY + puntos[i].y * escala
+                            );
+
+                        }
+
+                        contexto.closePath();
+
+                        contexto.fillStyle = `rgba(${color}, 0.18)`;
+                        contexto.strokeStyle = `rgba(${color}, 0.85)`;
+                        contexto.lineWidth = 1.5;
+
+                        contexto.fill();
+                        contexto.stroke();
+
+                    }
+
+                }
+
+                // Caja delimitadora.
+                contexto.strokeStyle = esPersonaDetectada
+                    ? "#46c99a"
+                    : "#e6a34b";
+
+                contexto.lineWidth = 1.5;
+
+                contexto.strokeRect(
+                    izquierda,
+                    arriba,
+                    anchoCaja,
+                    altoCaja
+                );
+
+                // Las personas muestran su ID.
+                // Los objetos solo muestran la etiqueta "Objeto".
+                let etiqueta;
+
+                if (esPersonaDetectada) {
+
+                    const idObjeto = objeto.id ?? "--";
+
+                    etiqueta = `Persona ID: ${idObjeto}`;
+
+                } else {
+
+                    etiqueta = "Objeto";
+
+                }
+
+                contexto.font = "bold 11px Arial";
+
+                const anchoTexto = contexto.measureText(
+                    etiqueta
+                ).width;
+
+                const altoEtiqueta = 19;
+
+                const etiquetaY = Math.max(
+                    0,
+                    arriba - altoEtiqueta
+                );
+
+                contexto.fillStyle = "rgba(0, 0, 0, 0.78)";
+
+                contexto.fillRect(
+                    izquierda,
+                    etiquetaY,
+                    anchoTexto + 10,
+                    altoEtiqueta
+                );
+
+                contexto.fillStyle = esPersonaDetectada
+                    ? "#75e0b8"
+                    : "#f3bd73";
+
+                contexto.fillText(
+                    etiqueta,
+                    izquierda + 5,
+                    etiquetaY + 13
+                );
+
+            }
+
+        }
+
+        // =====================================================
+        // LIMPIAR DETECCIONES
+        // =====================================================
+
+        function limpiarDetecciones(id) {
+
+            const canvas = document.getElementById(`overlay-${id}`);
+
+            if (!canvas) return;
+
+            const contexto = canvas.getContext("2d");
+
+            contexto.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+        }
+
+        // =====================================================
+        // VOZ DEL SISTEMA
+        // =====================================================
+
+        function obtenerMensajeDecision(decision) {
+
+            return decision
+                ? "Ingreso permitido. Puede ingresar al ascensor."
+                : "Capacidad completa, espere el siguiente viaje.";
+
+        }
+
+        function emitirMensajeVoz(eventoId, decision) {
+
+            if (!("speechSynthesis" in window)) {
+
+                console.warn(
+                    "Este navegador no admite reproducción de voz."
+                );
+
+                return;
+
+            }
+
+            if (!eventoId || eventosConVoz.has(eventoId)) {
+                return;
+            }
+
+            // Registrar antes de reproducir para impedir duplicados.
+            eventosConVoz.add(eventoId);
+
+            const mensaje = obtenerMensajeDecision(decision);
+
+            // Evitar acumular mensajes antiguos.
+            window.speechSynthesis.cancel();
+
+            const anuncio = new SpeechSynthesisUtterance(mensaje);
+
+            anuncio.lang = "es-ES";
+            anuncio.rate = 0.9;
+            anuncio.pitch = 1;
+            anuncio.volume = 1;
+
+            anuncio.onstart = () => {
+
+                console.log(
+                    "Reproduciendo mensaje de voz:",
+                    mensaje
+                );
+
+            };
+
+            anuncio.onend = () => {
+
+                console.log(
+                    "Finalizó el mensaje de voz."
+                );
+
+            };
+
+            anuncio.onerror = (evento) => {
+
+                console.error(
+                    "Error al reproducir la voz:",
+                    evento
+                );
+
+            };
+
+            window.speechSynthesis.speak(anuncio);
+
+        }
+
+        // =====================================================
+        // MOSTRAR ESTADO PENDIENTE
+        // =====================================================
+
+        function mostrarPendiente(mensaje) {
+
+            document.getElementById(
+                "analisis-decision"
+            ).textContent = "Pendiente";
+
+            document.getElementById(
+                "estado-analisis"
+            ).innerHTML =
+                "<span class='dot'></span> ESPERANDO EVALUACIÓN ESPACIAL";
+
+            document.getElementById(
+                "estado-analisis"
+            ).className = "decision-pendiente";
+
+            document.getElementById(
+                "detalle-analisis"
+            ).textContent = mensaje;
+
+            document.getElementById(
+                "mensaje-analisis"
+            ).textContent =
+                "🔊 MENSAJE DE VOZ: Esperando una evaluación espacial válida.";
+
+        }
+
+        // =====================================================
+        // COMPARTIR DATOS CON EL DASHBOARD
+        // =====================================================
+
+        function publicarDatosDashboard() {
+
+            const interior = datosCamaras.interior;
+            const exterior = datosCamaras.exterior;
+
+            const videoInterior = document.getElementById(
+                "video-camara-1"
+            );
+
+            const videoExterior = document.getElementById(
+                "video-camara-2"
+            );
+
+            const datosCompartidos = {
+
+                personas: interior.personas,
+
+                objetos: interior.objetos,
+
+                ocupacionActual: interior.porcentajeEspacial,
+
+                superficieOcupadaM2: interior.superficieM2,
+
+                medicionEspacialDisponible:
+                    interior.medicionDisponible,
+
+                ingresosRegistrados: exterior.entradas,
+
+                porcentajeAdicional: exterior.porcentajeAdicional,
+
+                porcentajeProyectado: exterior.porcentajeProyectado,
+
+                decisionDisponible: exterior.decisionDisponible,
+
+                decision:
+                    exterior.decisionDisponible &&
+                    ultimaEvaluacionIngreso
+                        ? (
+                            ultimaEvaluacionIngreso.permitir_ingreso
+                                ? "Ingreso permitido"
+                                : "Ingreso no permitido"
+                        )
+                        : "Esperando evaluación espacial",
+
+                direccion: document.getElementById(
+                    "direccion-camara-2"
+                ).textContent,
+
+                camara1Activa:
+                    !videoInterior.paused && !videoInterior.ended,
+
+                camara2Activa:
+                    !videoExterior.paused && !videoExterior.ended,
+
+                actualizado: new Date().toISOString()
+
+            };
+
+            try {
+
+                localStorage.setItem(
+                    CLAVE_DASHBOARD,
+                    JSON.stringify(datosCompartidos)
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "No se pudieron compartir los datos:",
+                    error
+                );
+
+            }
+
+        }
+
+        // =====================================================
+        // ACTUALIZAR CÁMARA INTERIOR
+        // =====================================================
+
+        function actualizarCamaraInterior(resultado) {
+
+            const detecciones = obtenerListaDetecciones(resultado);
+
+            const personas = contarPersonas(
+                resultado,
+                detecciones
+            );
+
+            const objetos = contarOtrosObjetos(detecciones);
+
+            const interior = datosCamaras.interior;
+
+            interior.personas = personas;
+            interior.objetos = objetos;
+
+            // Solo se acepta un porcentaje espacial calibrado.
+            const porcentajeEspacial = obtenerPorcentajeEspacial(resultado);
+
+            const superficie = numeroValido(
+                resultado.superficie_ocupada_m2
+            );
+
+            interior.porcentajeEspacial = porcentajeEspacial;
+            interior.superficieM2 = superficie;
+
+            interior.medicionDisponible =
+                porcentajeEspacial !== null;
+
+            document.getElementById(
+                "personas-camara-1"
+            ).textContent = personas;
+
+            document.getElementById(
+                "objetos-camara-1"
+            ).textContent = objetos;
+
+            document.getElementById(
+                "ocupacion-camara-1"
+            ).textContent =
+                porcentajeEspacial !== null
+                    ? `${porcentajeEspacial.toFixed(1)}%`
+                    : "--";
+
+            document.getElementById(
+                "espacio-camara-1"
+            ).textContent =
+                superficie !== null
+                    ? `${superficie.toFixed(2)} m²`
+                    : "-- m²";
+
+            actualizarAnalisis();
+            publicarDatosDashboard();
+
+        }
+
+        // =====================================================
+        // OBTENER IDENTIFICADOR ÚNICO DEL EVENTO
+        // =====================================================
+
+        function obtenerIdentificadorEvento(evaluacion, cruce) {
+
+            const identificadores = [
+
+                evaluacion?.evento_id,
+                evaluacion?.id_evento,
+                evaluacion?.cruce_id,
+
+                cruce?.evento_id,
+                cruce?.id_evento,
+                cruce?.cruce_id
+
+            ];
+
+            for (const identificador of identificadores) {
+
+                if (
+                    identificador !== null &&
+                    identificador !== undefined &&
+                    identificador !== ""
+                ) {
+
+                    return String(identificador);
+
+                }
+
+            }
+
+            const personaId =
+                evaluacion?.persona_id ??
+                evaluacion?.id_persona ??
+                cruce?.persona_id ??
+                cruce?.id_persona ??
+                evaluacion?.id ??
+                cruce?.id;
+
+            const fotograma =
+                evaluacion?.numero_fotograma ??
+                evaluacion?.fotograma ??
+                evaluacion?.frame ??
+                cruce?.numero_fotograma ??
+                cruce?.fotograma ??
+                cruce?.frame;
+
+            const direccion =
+                evaluacion?.direccion ??
+                cruce?.direccion ??
+                "entrada";
+
+            if (
+                personaId !== null &&
+                personaId !== undefined &&
+                fotograma !== null &&
+                fotograma !== undefined
+            ) {
+
+                return `${personaId}_${direccion}_${fotograma}`;
+
+            }
+
+            // Si no hay identificador de evento ni fotograma,
+            // se utiliza una clave local para este cruce.
+            // El backend debería proporcionar evento_id para
+            // garantizar deduplicación exacta entre fotogramas.
+            if (personaId !== null && personaId !== undefined) {
+
+                return `${personaId}_${direccion}_sin_fotograma_${contadorEventosLocal}`;
+
+            }
+
+            contadorEventosLocal++;
+
+            return `evento_local_${contadorEventosLocal}`;
+
+        }
+
+        // =====================================================
+        // PROCESAR EVALUACIÓN DE INGRESO
+        // =====================================================
+
+        function procesarEvaluacionIngreso(evaluacion, cruce) {
+
+            if (!evaluacion || typeof evaluacion !== "object") {
+                return;
+            }
+
+            // Se necesita una decisión explícita del backend.
+            const decisionValida =
+                evaluacion.permitir_ingreso === true ||
+                evaluacion.permitir_ingreso === false;
+
+            if (!decisionValida) {
+
+                mostrarPendiente(
+                    evaluacion.motivo ||
+                    "El sistema todavía no ha recibido una decisión de ingreso."
+                );
+
+                return;
+
+            }
+
+            const eventoId = obtenerIdentificadorEvento(
+                evaluacion,
+                cruce
+            );
+
+            if (evaluacionesProcesadas.has(eventoId)) {
+                return;
+            }
+
+            const porcentajeAdicional = numeroValido(
+                evaluacion.porcentaje_entrante ??
+                evaluacion.porcentaje_adicional ??
+                evaluacion.porcentaje_ocupacion_entrante ??
+                evaluacion.porcentaje_ingreso_aprox
+            );
+
+            const porcentajeProyectado = numeroValido(
+                evaluacion.porcentaje_proyectado ??
+                evaluacion.porcentaje_proyectado_aprox
+            );
+
+            const permitirIngreso =
+                evaluacion.permitir_ingreso === true;
+
+            evaluacionesProcesadas.add(eventoId);
+
+            datosCamaras.exterior.porcentajeAdicional =
+                porcentajeAdicional;
+
+            datosCamaras.exterior.porcentajeProyectado =
+                porcentajeProyectado;
+
+            // Se conserva la decisión recibida aunque falte algún porcentaje.
+            datosCamaras.exterior.decisionDisponible = true;
+
+            ultimaEvaluacionIngreso = {
+
+                ...evaluacion,
+
+                evento_id: eventoId
+
+            };
+
+            const mensaje = obtenerMensajeDecision(permitirIngreso);
+
+            document.getElementById(
+                "analisis-decision"
+            ).textContent = permitirIngreso
+                ? "Permitido"
+                : "No permitido";
+
+            document.getElementById(
+                "estado-analisis"
+            ).innerHTML = permitirIngreso
+                ? "<span class='dot'></span> INGRESO PERMITIDO"
+                : "<span class='dot'></span> INGRESO NO PERMITIDO";
+
+            document.getElementById(
+                "estado-analisis"
+            ).className = permitirIngreso
+                ? "decision-permitida"
+                : "decision-rechazada";
+
+            document.getElementById(
+                "detalle-analisis"
+            ).textContent =
+                evaluacion.motivo ||
+                (permitirIngreso
+                    ? "La evaluación permite el ingreso."
+                    : "La evaluación no permite el ingreso.");
+
+            document.getElementById(
+                "mensaje-analisis"
+            ).textContent = `🔊 MENSAJE DE VOZ: ${mensaje}`;
+
+            // La voz se reproduce después de la evaluación.
+            emitirMensajeVoz(
+                eventoId,
+                permitirIngreso
+            );
+
+            actualizarAnalisis();
+            publicarDatosDashboard();
+
+            console.log("Evaluación de ingreso procesada:", {
+                eventoId,
+                permitirIngreso,
+                evaluacion
+            });
+
+        }
+
+        // =====================================================
+        // ACTUALIZAR CÁMARA EXTERIOR
+        // =====================================================
+
+        function actualizarCamaraExterior(resultado) {
+
+            const detecciones = obtenerListaDetecciones(resultado);
+
+            const personas = contarPersonas(
+                resultado,
+                detecciones
+            );
+
+            const objetos = contarOtrosObjetos(detecciones);
+
+            datosCamaras.exterior.personas = personas;
+            datosCamaras.exterior.objetos = objetos;
+
+            document.getElementById(
+                "personas-camara-2"
+            ).textContent = personas;
+
+            document.getElementById(
+                "objetos-camara-2"
+            ).textContent = objetos;
+
+            const cruces = Array.isArray(resultado.cruces_detectados)
+                ? resultado.cruces_detectados
+                : [];
+
+            const entradasConfirmadas = [];
+
+            for (const cruce of cruces) {
+
+                const direccion = String(
+                    cruce.direccion || ""
+                ).toLowerCase();
+
+                const esEntrada =
+                    direccion === "izquierda_a_derecha" ||
+                    direccion === "entrada";
+
+                const esSalida =
+                    direccion === "derecha_a_izquierda" ||
+                    direccion === "salida";
+
+                if (!esEntrada && !esSalida) {
+                    continue;
+                }
+
+                const eventoId = obtenerIdentificadorEvento(
+                    {},
+                    cruce
+                );
+
+                if (crucesProcesados.has(eventoId)) {
+                    continue;
+                }
+
+                crucesProcesados.add(eventoId);
+
+                if (esEntrada) {
+
+                    datosCamaras.exterior.entradas++;
+
+                    entradasConfirmadas.push({
+                        cruce,
+                        eventoId
+                    });
+
+                    document.getElementById(
+                        "direccion-camara-2"
+                    ).textContent = "Izquierda → derecha";
+
+                } else {
+
+                    document.getElementById(
+                        "direccion-camara-2"
+                    ).textContent = "Derecha → izquierda";
+
+                }
+
+            }
+
+            document.getElementById(
+                "ingreso-camara-2"
+            ).textContent =
+                `${datosCamaras.exterior.entradas} ingresos`;
+
+            // Procesar evaluaciones emitidas en el fotograma del cruce.
+            if (entradasConfirmadas.length > 0) {
+
+                const evaluaciones = Array.isArray(
+                    resultado.evaluaciones_ingreso
+                )
+                    ? resultado.evaluaciones_ingreso
+                    : [];
+
+                for (const evaluacion of evaluaciones) {
+
+                    const personaId =
+                        evaluacion.persona_id ??
+                        evaluacion.id_persona ??
+                        evaluacion.id;
+
+                    let entradaRelacionada = entradasConfirmadas.find(
+                        entrada => {
+
+                            const cruce = entrada.cruce;
+
+                            const idCruce =
+                                cruce.persona_id ??
+                                cruce.id_persona ??
+                                cruce.id;
+
+                            return (
+                                personaId !== null &&
+                                personaId !== undefined &&
+                                idCruce !== null &&
+                                idCruce !== undefined &&
+                                String(personaId) === String(idCruce)
+                            );
+
+                        }
+                    );
+
+                    // Si el resultado contiene una sola entrada,
+                    // se relaciona con la evaluación recibida.
+                    if (
+                        !entradaRelacionada &&
+                        entradasConfirmadas.length === 1
+                    ) {
+
+                        entradaRelacionada = entradasConfirmadas[0];
+
+                    }
+
+                    if (entradaRelacionada) {
+
+                        const cruce = entradaRelacionada.cruce;
+
+                        // La evaluación y el cruce deben compartir
+                        // el identificador del evento cuando exista.
+                        const evaluacionConEvento = {
+
+                            ...evaluacion,
+
+                            evento_id:
+                                evaluacion.evento_id ??
+                                evaluacion.id_evento ??
+                                evaluacion.cruce_id ??
+                                entradaRelacionada.eventoId
+
+                        };
+
+                        procesarEvaluacionIngreso(
+                            evaluacionConEvento,
+                            cruce
+                        );
+
+                    }
+
+                }
+
+            }
+
+            // El backend conserva el último ingreso después del fotograma
+            // del cruce, cuando cruces_detectados ya vuelve a estar vacío.
+            const ultimoIngreso = resultado.ultimo_ingreso;
+            const direccionUltimoIngreso = String(
+                ultimoIngreso?.direccion || ""
+            ).toLowerCase();
+            const ultimoEventoEsEntrada =
+                ultimoIngreso?.tipo_evento === "entrada" ||
+                ultimoIngreso?.tipo === "entrada" ||
+                direccionUltimoIngreso === "izquierda_a_derecha" ||
+                direccionUltimoIngreso === "entrada";
+
+            if (ultimoEventoEsEntrada) {
+                procesarEvaluacionIngreso(
+                    ultimoIngreso,
+                    ultimoIngreso
+                );
+            }
+
+            actualizarAnalisis();
+            publicarDatosDashboard();
+
+        }
+
+        // =====================================================
+        // ANÁLISIS GENERAL
+        // =====================================================
+
+        function actualizarAnalisis() {
+
+            const interior = datosCamaras.interior;
+            const exterior = datosCamaras.exterior;
+
+            document.getElementById(
+                "analisis-ocupacion"
+            ).textContent =
+                interior.porcentajeEspacial !== null
+                    ? `${interior.porcentajeEspacial.toFixed(1)}%`
+                    : "--";
+
+            document.getElementById(
+                "analisis-ingreso"
+            ).textContent =
+                exterior.porcentajeAdicional !== null
+                    ? `+${exterior.porcentajeAdicional.toFixed(1)}%`
+                    : "--";
+
+            document.getElementById(
+                "analisis-proyectado"
+            ).textContent =
+                exterior.porcentajeProyectado !== null
+                    ? `${exterior.porcentajeProyectado.toFixed(1)}%`
+                    : "--";
+
+            document.getElementById(
+                "analisis-limite"
+            ).textContent = `${configuracion.limite}%`;
+
+            // PRIORIDAD 1: mostrar la última decisión recibida.
+            if (
+                exterior.decisionDisponible &&
+                ultimaEvaluacionIngreso
+            ) {
+
+                const permitido =
+                    ultimaEvaluacionIngreso.permitir_ingreso === true;
+
+                document.getElementById(
+                    "analisis-decision"
+                ).textContent = permitido
+                    ? "Permitido"
+                    : "No permitido";
+
+                document.getElementById(
+                    "estado-analisis"
+                ).innerHTML = permitido
+                    ? "<span class='dot'></span> INGRESO PERMITIDO"
+                    : "<span class='dot'></span> INGRESO NO PERMITIDO";
+
+                document.getElementById(
+                    "estado-analisis"
+                ).className = permitido
+                    ? "decision-permitida"
+                    : "decision-rechazada";
+
+                document.getElementById(
+                    "detalle-analisis"
+                ).textContent =
+                    ultimaEvaluacionIngreso.motivo ||
+                    "Evaluación de ingreso recibida.";
+
+                publicarDatosDashboard();
+
+                return;
+
+            }
+
+            // PRIORIDAD 2: revisar la ocupación interior.
+            if (!interior.medicionDisponible) {
+
+                mostrarPendiente(
+                    "Esperando los datos de ocupación de la cámara interior."
+                );
+
+                publicarDatosDashboard();
+
+                return;
+
+            }
+
+            // PRIORIDAD 3: esperar el próximo cruce confirmado.
+            document.getElementById(
+                "analisis-decision"
+            ).textContent = "Esperando";
+
+            document.getElementById(
+                "estado-analisis"
+            ).innerHTML =
+                "<span class='dot'></span> OCUPACIÓN INTERIOR ANALIZADA";
+
+            document.getElementById(
+                "estado-analisis"
+            ).className = "";
+
+            document.getElementById(
+                "detalle-analisis"
+            ).textContent =
+                "Ocupación interior recibida. La cámara exterior evaluará el ingreso cuando una persona cruce la línea virtual.";
+
+            document.getElementById(
+                "mensaje-analisis"
+            ).textContent =
+                "🔊 MENSAJE DE VOZ: Esperando cruce de ingreso.";
+
+            publicarDatosDashboard();
+
+        }
+
+        // =====================================================
+        // ENVÍO DE FOTOGRAMAS AL BACKEND
+        // =====================================================
+
+        async function analizarFotograma(id, camaraId) {
+
+            const video = document.getElementById(`video-${id}`);
+
+            if (
+                !video ||
+                video.paused ||
+                video.ended ||
+                video.readyState < 2 ||
+                procesando[id] ||
+                !analisisActivo[id]
+            ) return;
+
+            procesando[id] = true;
+
+            try {
+
+                const canvas = document.createElement("canvas");
+
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                const contexto = canvas.getContext("2d");
+
+                contexto.drawImage(
+                    video,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+
+                const blob = await new Promise(resolve => {
+
+                    canvas.toBlob(
+                        resolve,
+                        "image/jpeg",
+                        0.8
+                    );
+
+                });
+
+                if (!blob) {
+                    throw new Error("No se pudo capturar el fotograma.");
+                }
+
+                const formulario = new FormData();
+
+                formulario.append(
+                    "imagen",
+                    blob,
+                    `${id}.jpg`
+                );
+
+                const parametros = new URLSearchParams({
+
+                    camara_id: camaraId,
+
+                    area_cabina_m2: String(configuracion.area),
+
+                    capacidad: String(configuracion.capacidad),
+
+                    limite_ocupacion: String(configuracion.limite)
+
+                });
+
+                if (camaraId === "exterior") {
+
+                    parametros.set(
+                        "linea_porcentaje",
+                        String(configuracion.linea)
+                    );
+
+                }
+
+                const url =
+                    `${API_URL}/vision/detectar?${parametros.toString()}`;
+
+                const respuesta = await fetch(url, {
+
+                    method: "POST",
+
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    },
+
+                    body: formulario
+
+                });
+
+                if (!respuesta.ok) {
+
+                    const mensaje = await respuesta.text();
+
+                    throw new Error(
+                        `Error ${respuesta.status}: ${mensaje}`
+                    );
+
+                }
+
+                const resultado = await respuesta.json();
+
+                if (
+                    video.paused ||
+                    video.ended ||
+                    !analisisActivo[id]
+                ) return;
+
+                dibujarDetecciones(id, resultado);
+
+                if (camaraId === "interior") {
+
+                    actualizarCamaraInterior(resultado);
+
+                } else {
+
+                    actualizarCamaraExterior(resultado);
+
+                }
+
+                console.log(
+                    `Resultado ${camaraId}:`,
+                    resultado
+                );
+
+            } catch (error) {
+
+                console.error(
+                    `Error analizando ${camaraId}:`,
+                    error
+                );
+
+            } finally {
+
+                procesando[id] = false;
+
+                if (
+                    analisisActivo[id] &&
+                    !video.paused &&
+                    !video.ended
+                ) {
+
+                    temporizadores[id] = setTimeout(() => {
+
+                        analizarFotograma(id, camaraId);
+
+                    }, INTERVALO_ANALISIS_MS);
+
+                }
+
+            }
+
+        }
+
+        // =====================================================
+        // CONTROL DEL ANÁLISIS
+        // =====================================================
+
+        function iniciarAnalisis(id, camaraId) {
+
+            detenerAnalisis(id);
+
+            analisisActivo[id] = true;
+
+            publicarDatosDashboard();
+
+            console.log(`Análisis iniciado: ${camaraId}`);
+
+            analizarFotograma(id, camaraId);
+
+        }
+
+        function detenerAnalisis(id) {
+
+            analisisActivo[id] = false;
+
+            if (temporizadores[id]) {
+
+                clearTimeout(temporizadores[id]);
+
+                delete temporizadores[id];
+
+            }
+
+            limpiarDetecciones(id);
+
+        }
+
+        // =====================================================
+        // CONFIGURAR EVENTOS DE CADA VIDEO
+        // =====================================================
+
+        function configurarCamara(id, camaraId) {
+
+            const video = document.getElementById(`video-${id}`);
+
+            video.addEventListener("timeupdate", () => {
+                guardarEstadoVideo(id);
+            });
+
+            video.addEventListener("play", async () => {
+
+                estadoDeseadoReproduccion[id] = true;
+
+                guardarEstadoVideo(id);
+
+                // Una sesión nueva se inicia solamente cuando el video
+                // no tiene una sesión activa.
+                if (
+                    !restaurandoVideo[id] &&
+                    video.dataset.sesionIniciada !== "true"
+                ) {
+
+                    try {
+
+                        if (camaraId === "exterior") {
+
+                            reiniciarConteoExterior();
+
+                        } else {
+
+                            reiniciarCamaraInterior();
+
+                        }
+
+                        await reiniciarSeguimiento(camaraId);
+
+                        video.dataset.sesionIniciada = "true";
+
+                    } catch (error) {
+
+                        console.error(
+                            `No se pudo iniciar el seguimiento de ${camaraId}:`,
+                            error
+                        );
+
+                        video.dataset.sesionIniciada = "false";
+
+                        return;
+
+                    }
+
+                }
+
+                // Si el usuario pausó durante el reinicio,
+                // no se inicia el análisis hasta volver a reproducir.
+                if (video.paused || video.ended) {
+                    return;
+                }
+
+                iniciarAnalisis(id, camaraId);
+
+                publicarDatosDashboard();
+
+            });
+
+            video.addEventListener("pause", () => {
+
+                if (!document.hidden) {
+
+                    estadoDeseadoReproduccion[id] = false;
+
+                    guardarEstadoVideo(id);
+
+                }
+
+                detenerAnalisis(id);
+
+                publicarDatosDashboard();
+
+            });
+
+            video.addEventListener("ended", () => {
+
+                estadoDeseadoReproduccion[id] = false;
+
+                detenerAnalisis(id);
+
+                borrarEstadoVideo(id);
+
+                if (camaraId === "exterior") {
+
+                    reiniciarConteoExterior();
+
+                } else {
+
+                    reiniciarCamaraInterior();
+
+                }
+
+                // Se marca la sesión como finalizada.
+                // El siguiente Play realizará un único reinicio.
+                video.dataset.sesionIniciada = "false";
+
+                publicarDatosDashboard();
+
+                console.log(
+                    `Finalizó el video de ${camaraId}.`
+                );
+
+            });
+
+            video.addEventListener("loadedmetadata", () => {
+
+                if (restaurandoVideo[id]) return;
+
+                const estado = recuperarEstadoVideo(id);
+
+                if (estado) {
+                    restaurarPosicionVideo(id);
+                }
+
+            });
+
+            video.addEventListener("error", () => {
+
+                console.error(
+                    `Error al cargar el video ${id}:`,
+                    video.error
+                );
+
+            });
+
+        }
+
+        // =====================================================
+        // GUARDAR ESTADO DE LOS VIDEOS
+        // =====================================================
+
+        function guardarTodosLosVideos() {
+
+            const ids = ["camara-1", "camara-2"];
+
+            for (const id of ids) {
+
+                const video = document.getElementById(`video-${id}`);
+
+                if (!video || !video.src) continue;
+
+                const estado = {
+
+                    currentTime: video.currentTime || 0,
+
+                    reproduciendo: false,
+
+                    nombre: video.dataset.nombreVideo || ""
+
+                };
+
+                try {
+
+                    localStorage.setItem(
+                        obtenerClaveVideo(id),
+                        JSON.stringify(estado)
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        `Error guardando ${id}:`,
+                        error
+                    );
+
+                }
+
+            }
+
+        }
+
+        window.addEventListener("pagehide", guardarTodosLosVideos);
+
+        window.addEventListener("beforeunload", guardarTodosLosVideos);
+
+        // =====================================================
+        // SELECCIÓN DE VIDEOS
+        // =====================================================
+
+        function configurarSelector(inputId, videoId) {
+
+            const input = document.getElementById(inputId);
+
+            input.addEventListener("change", async function() {
+
+                const archivo = this.files[0];
+
+                if (!archivo) return;
+
+                if (!archivo.type.startsWith("video/")) {
+
+                    alert("Selecciona un archivo de video válido.");
+
+                    this.value = "";
+
+                    return;
+
+                }
+
+                const id = videoId.replace("video-", "");
+
+                const camaraId = id === "camara-1"
+                    ? "interior"
+                    : "exterior";
+
+                try {
+
+                    detenerAnalisis(id);
+
+                    const video = document.getElementById(videoId);
+
+                    estadoDeseadoReproduccion[id] = false;
+
+                    video.pause();
+
+                    borrarEstadoVideo(id);
+
+                    video.dataset.sesionIniciada = "false";
+
+                    if (camaraId === "interior") {
+
+                        reiniciarCamaraInterior();
+
+                    } else {
+
+                        reiniciarConteoExterior();
+
+                    }
+
+                    await guardarVideo(id, archivo);
+
+                    mostrarVideo(
+                        id,
+                        archivo,
+                        archivo.name
+                    );
+
+                    video.dataset.sesionIniciada = "false";
+
+                    // Reiniciar el tracker para que el nuevo video
+                    // no herede el seguimiento del video anterior.
+                    await reiniciarSeguimiento(camaraId);
+
+                    actualizarAnalisis();
+
+                    publicarDatosDashboard();
+
+                    console.log(`Video nuevo de ${id} guardado.`);
+
+                } catch (error) {
+
+                    console.error(
+                        "Error al guardar o preparar el video:",
+                        error
+                    );
+
+                    alert(
+                        "No se pudo guardar o preparar el video. Revisa la conexión con el backend."
+                    );
+
+                }
+
+            });
+
+        }
+
+        // =====================================================
+        // INICIALIZAR MONITOREO
+        // =====================================================
+
+        async function iniciarMonitoreo() {
+
+            try {
+
+                cargarConfiguracion();
+
+                await abrirBaseDatos();
+
+                configurarBotonesEliminar();
+
+                const camaras = [
+
+                    {
+                        id: "camara-1",
+                        input: "archivo-camara-1",
+                        video: "video-camara-1",
+                        tipo: "interior"
+                    },
+
+                    {
+                        id: "camara-2",
+                        input: "archivo-camara-2",
+                        video: "video-camara-2",
+                        tipo: "exterior"
+                    }
+
+                ];
+
+                // Configurar cámaras y selectores.
+                for (const camara of camaras) {
+
+                    configurarCamara(
+                        camara.id,
+                        camara.tipo
+                    );
+
+                    configurarSelector(
+                        camara.input,
+                        camara.video
+                    );
+
+                }
+
+                // Recuperar los videos guardados.
+                for (const camara of camaras) {
+
+                    const registro = await recuperarVideo(camara.id);
+
+                    if (registro && registro.archivo) {
+
+                        mostrarVideo(
+                            camara.id,
+                            registro.archivo,
+                            registro.nombre
+                        );
+
+                        const video = document.getElementById(
+                            camara.video
+                        );
+
+                        video.dataset.sesionIniciada = "false";
+
+                        video.addEventListener(
+                            "loadedmetadata",
+                            function restaurarUnaVez() {
+
+                                restaurarPosicionVideo(camara.id);
+
+                                video.removeEventListener(
+                                    "loadedmetadata",
+                                    restaurarUnaVez
+                                );
+
+                            }
+                        );
+
+                    }
+
+                }
+
+                actualizarAnalisis();
+
+                publicarDatosDashboard();
+
+                console.log(
+                    "Monitoreo iniciado. Videos recuperados."
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Error al iniciar el monitoreo:",
+                    error
+                );
+
+                alert(
+                    "No se pudieron recuperar los videos guardados."
+                );
+
+            }
+
+        }
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            iniciarMonitoreo
+        );
+
+    </script>
+
+</body>
+</html>

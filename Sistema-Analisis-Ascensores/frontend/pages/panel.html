@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AforoVisión | Panel principal</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #f4f6f9;
+        }
+
+        .vista {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #f4f6f9;
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .vista.activa {
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 3;
+        }
+
+        /*
+         * Monitoreo permanece cargado y visible para el navegador,
+         * aunque el usuario esté consultando otra pantalla.
+         */
+        #vistaMonitoreo {
+            visibility: visible;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #vistaMonitoreo.activa {
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 4;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- DASHBOARD -->
+    <iframe
+        id="vistaDashboard"
+        class="vista activa"
+        src="dashboard.html"
+        title="Dashboard de AforoVisión">
+    </iframe>
+
+    <!-- MONITOREO -->
+    <iframe
+        id="vistaMonitoreo"
+        class="vista"
+        src="monitoreo.html"
+        title="Monitoreo de cámaras">
+    </iframe>
+
+    <!-- CONFIGURACIÓN -->
+    <iframe
+        id="vistaConfiguracion"
+        class="vista"
+        src="configuracion.html"
+        title="Configuración del sistema">
+    </iframe>
+
+    <!-- ESTADO DE CÁMARAS -->
+    <iframe
+        id="vistaCamaras"
+        class="vista"
+        src="estado-camaras.html"
+        title="Estado de cámaras">
+    </iframe>
+
+    <script>
+        const vistas = {
+            dashboard: document.getElementById("vistaDashboard"),
+            monitoreo: document.getElementById("vistaMonitoreo"),
+            configuracion: document.getElementById("vistaConfiguracion"),
+            "estado-camaras": document.getElementById("vistaCamaras")
+        };
+
+        let vistaActual = "dashboard";
+
+        // Cambia la pantalla sin destruir los iframes.
+        function mostrarVista(nombre) {
+            if (!vistas[nombre]) {
+                console.warn("Vista no encontrada:", nombre);
+                return;
+            }
+
+            vistaActual = nombre;
+
+            Object.entries(vistas).forEach(([nombreVista, iframe]) => {
+                iframe.classList.toggle(
+                    "activa",
+                    nombreVista === nombre
+                );
+            });
+        }
+
+        // Permite cambiar de pantalla desde las páginas internas.
+        window.mostrarVistaAforo = mostrarVista;
+
+        // Recibir solicitudes de navegación de los iframes.
+        window.addEventListener("message", function(event) {
+
+            // Solo acepta mensajes de las páginas del mismo origen.
+            if (event.origin !== window.location.origin) {
+                return;
+            }
+
+            const datos = event.data;
+
+            if (!datos || typeof datos !== "object") {
+                return;
+            }
+
+            if (datos.tipo === "aforovision:navegar") {
+                mostrarVista(datos.vista);
+            }
+        });
+
+        // Interceptar enlaces internos de las cuatro páginas.
+        function configurarNavegacion(iframe) {
+            iframe.addEventListener("load", function() {
+                try {
+                    const documento = iframe.contentDocument;
+
+                    if (!documento) return;
+
+                    documento.addEventListener("click", function(event) {
+                        const enlace = event.target.closest("a");
+
+                        if (!enlace) return;
+
+                        const destino = enlace.getAttribute("href");
+
+                        if (!destino) return;
+
+                        const archivo = destino
+                            .split("/")
+                            .pop()
+                            .split("?")[0]
+                            .split("#")[0]
+                            .toLowerCase();
+
+                        const destinos = {
+                            "dashboard.html": "dashboard",
+                            "monitoreo.html": "monitoreo",
+                            "configuracion.html": "configuracion",
+                            "estado-camaras.html": "estado-camaras"
+                        };
+
+                        if (destinos[archivo]) {
+                            event.preventDefault();
+                            mostrarVista(destinos[archivo]);
+                        }
+
+                    }, true);
+
+                } catch (error) {
+                    console.error(
+                        "Error al configurar la navegación:",
+                        error
+                    );
+                }
+            });
+        }
+
+        Object.values(vistas).forEach(configurarNavegacion);
+
+        // Verificar que exista una sesión iniciada.
+        const token = sessionStorage.getItem("aforovision_token");
+
+        if (!token) {
+            window.location.replace("login.html");
+        }
+
+        // Mantener la vista seleccionada al regresar a la pestaña.
+        window.addEventListener("pageshow", function() {
+            mostrarVista(vistaActual);
+        });
+    </script>
+
+</body>
+</html>

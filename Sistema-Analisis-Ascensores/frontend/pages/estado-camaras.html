@@ -1,0 +1,780 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado de cámaras | AforoVisión</title>
+    <link rel="stylesheet" href="../styles/estado-camaras.css">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="logo">▤</div>
+            <div>
+                <h2>AFOROVISIÓN</h2>
+                <p>v2.4 · Admin</p>
+            </div>
+        </div>
+
+        <nav>
+            <a href="dashboard.html" data-vista="dashboard">
+                <span>▦</span> Dashboard
+            </a>
+
+            <a href="monitoreo.html" data-vista="monitoreo">
+                <span>▣</span> Monitoreo
+            </a>
+
+            <a href="configuracion.html" data-vista="configuracion">
+                <span>⚙</span> Configuración
+            </a>
+
+            <a class="active"
+               href="estado-camaras.html"
+               data-vista="estado-camaras">
+                <span>▣</span> Estado de cámaras
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="general-status">
+                <small>ESTADO GENERAL</small>
+                <p id="estado-general">
+                    <i></i> Esperando información
+                </p>
+            </div>
+
+            <a class="logout" href="login.html" id="cerrar-sesion">
+                ⇥ Cerrar sesión
+            </a>
+
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>Estado de cámaras</h1>
+            <p>
+                Supervisión del estado de las cámaras y de la transmisión
+                de videos utilizados para el análisis.
+            </p>
+        </header>
+
+        <section id="banner" class="banner banner-warning">
+
+            <span class="banner-icon" id="banner-icon">!</span>
+
+            <strong id="banner-text">
+                Esperando información de las cámaras desde Monitoreo.
+            </strong>
+
+        </section>
+
+        <section class="camera-grid">
+
+            <!-- CÁMARA 1: INTERIOR -->
+
+            <article class="camera-card" id="card-1">
+
+                <header class="camera-header">
+
+                    <div class="camera-title">
+                        <span class="camera-icon">▣</span>
+
+                        <div>
+                            <h2>Cámara 1 – Interior</h2>
+                            <p>Cabina del ascensor</p>
+                        </div>
+                    </div>
+
+                    <span class="status status-warning" id="status-1">
+                        <i></i> SIN DATOS
+                    </span>
+
+                </header>
+
+                <div class="camera-preview preview-interior">
+
+                    <span class="live-label" id="live-1">
+                        ● SIN VIDEO
+                    </span>
+
+                    <span class="camera-time" id="time-1">
+                        CAM-001-INT
+                    </span>
+
+                    <div class="elevator-wall"></div>
+                    <div class="elevator-door"></div>
+                    <div class="elevator-panel"></div>
+
+                    <span class="preview-caption">
+                        VISTA INTERIOR · CAM1
+                    </span>
+
+                    <div class="offline-overlay" id="overlay-1">
+                        <strong>ESPERANDO VIDEO</strong>
+                        <span>Selecciona un video en Monitoreo</span>
+                    </div>
+
+                </div>
+
+                <div class="technical-data">
+
+                    <div class="data-row">
+                        <span>Identificador</span>
+                        <strong>CAM-001-INT</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>Fuente</span>
+                        <strong>Video local</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>Resolución</span>
+                        <strong>Según video</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>FPS</span>
+                        <strong>Según video</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>Detección</span>
+                        <strong id="detection-1">Sin información</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>Señal</span>
+                        <strong class="signal-warning" id="signal-1">
+                            Sin datos
+                        </strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- CÁMARA 2: EXTERIOR -->
+
+            <article class="camera-card" id="card-2">
+
+                <header class="camera-header">
+
+                    <div class="camera-title">
+                        <span class="camera-icon">▣</span>
+
+                        <div>
+                            <h2>Cámara 2 – Exterior</h2>
+                            <p>Exterior del ascensor</p>
+                        </div>
+                    </div>
+
+                    <span class="status status-warning" id="status-2">
+                        <i></i> SIN DATOS
+                    </span>
+
+                </header>
+
+                <div class="camera-preview preview-exterior">
+
+                    <span class="live-label" id="live-2">
+                        ● SIN VIDEO
+                    </span>
+
+                    <span class="camera-time" id="time-2">
+                        CAM-002-EXT
+                    </span>
+
+                    <div class="access-wall"></div>
+                    <div class="access-door"></div>
+                    <div class="access-window"></div>
+
+                    <span class="preview-caption">
+                        VISTA EXTERIOR · CAM2
+                    </span>
+
+                    <div class="offline-overlay" id="overlay-2">
+                        <strong>ESPERANDO VIDEO</strong>
+                        <span>Selecciona un video en Monitoreo</span>
+                    </div>
+
+                </div>
+
+                <div class="technical-data">
+
+                    <div class="data-row">
+                        <span>Identificador</span>
+                        <strong>CAM-002-EXT</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>Fuente</span>
+                        <strong>Video local</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>Resolución</span>
+                        <strong>Según video</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>FPS</span>
+                        <strong>Según video</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>Detección</span>
+                        <strong id="detection-2">Sin información</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>Señal</span>
+                        <strong class="signal-warning" id="signal-2">
+                            Sin datos
+                        </strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- REGLA DE FUNCIONAMIENTO -->
+
+        <section class="failure-rule">
+
+            <div class="info-icon">i</div>
+
+            <div>
+
+                <h3>Lógica de falla del sistema</h3>
+
+                <p>
+                    Si cualquiera de las dos cámaras necesarias para el
+                    análisis deja de transmitir durante más de
+                    <strong>5 segundos</strong>, el sistema muestra
+                    <strong>SISTEMA FUERA DE SERVICIO</strong> y suspende
+                    la autorización de nuevos ingresos.
+                </p>
+
+                <p>
+                    El sistema no mostrará
+                    <strong>"Ingreso permitido"</strong> cuando no disponga
+                    de la información necesaria para tomar una decisión.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        // ==========================================
+        // CONFIGURACIÓN GENERAL
+        // ==========================================
+
+        const CLAVE_ESTADO = "aforovision_estado_monitoreo";
+
+        const INTERVALO_ACTUALIZACION = 1000;
+
+        const TIEMPO_FALLA = 5000;
+
+
+        // ==========================================
+        // ESTADO DE LAS CÁMARAS
+        // ==========================================
+
+        const camaras = {
+
+            1: {
+                activa: null,
+                temporizador: null,
+                fallaConfirmada: false
+            },
+
+            2: {
+                activa: null,
+                temporizador: null,
+                fallaConfirmada: false
+            }
+
+        };
+
+
+        // ==========================================
+        // OBTENER INFORMACIÓN DE MONITOREO
+        // ==========================================
+
+        function obtenerEstadoMonitoreo() {
+
+            try {
+
+                const datos = localStorage.getItem(CLAVE_ESTADO);
+
+                if (!datos) {
+                    return null;
+                }
+
+                return JSON.parse(datos);
+
+            } catch (error) {
+
+                console.error(
+                    "Error al leer el estado de Monitoreo:",
+                    error
+                );
+
+                return null;
+
+            }
+
+        }
+
+
+        // ==========================================
+        // CAMBIAR ESTADO DE UNA CÁMARA
+        // ==========================================
+
+        function establecerEstado(numero, activa) {
+
+            const camara = camaras[numero];
+
+            if (camara.activa === activa) {
+                return;
+            }
+
+            camara.activa = activa;
+
+            if (camara.temporizador) {
+
+                clearTimeout(camara.temporizador);
+
+                camara.temporizador = null;
+
+            }
+
+            camara.fallaConfirmada = false;
+
+            // Si se detecta una falla, iniciar los 5 segundos.
+            if (activa === false) {
+
+                camara.temporizador = setTimeout(() => {
+
+                    if (camara.activa === false) {
+
+                        camara.temporizador = null;
+
+                        camara.fallaConfirmada = true;
+
+                        actualizarInterfaz();
+
+                    }
+
+                }, TIEMPO_FALLA);
+
+            }
+
+        }
+
+
+        // ==========================================
+        // SINCRONIZAR CON MONITOREO
+        // ==========================================
+
+        function sincronizarCamaras() {
+
+            const datos = obtenerEstadoMonitoreo();
+
+            if (datos) {
+
+                // Cámara interior.
+                establecerEstado(
+                    1,
+                    datos.camara1Activa === true
+                );
+
+                // Cámara exterior.
+                establecerEstado(
+                    2,
+                    datos.camara2Activa === true
+                );
+
+            } else {
+
+                // Sin datos no se considera operativa.
+                [1, 2].forEach(numero => {
+
+                    establecerEstado(numero, null);
+
+                });
+
+            }
+
+            actualizarInterfaz();
+
+        }
+
+
+        // ==========================================
+        // ACTUALIZAR INFORMACIÓN DE CADA CÁMARA
+        // ==========================================
+
+        function actualizarCamara(numero) {
+
+            const camara = camaras[numero];
+
+            const operativa = camara.activa;
+
+            const estado =
+                document.getElementById("status-" + numero);
+
+            const deteccion =
+                document.getElementById("detection-" + numero);
+
+            const senal =
+                document.getElementById("signal-" + numero);
+
+            const overlay =
+                document.getElementById("overlay-" + numero);
+
+            const live =
+                document.getElementById("live-" + numero);
+
+            const tarjeta =
+                document.getElementById("card-" + numero);
+
+
+            estado.className = "status";
+
+            live.classList.remove("live-offline");
+
+            tarjeta.classList.remove("camera-offline");
+
+
+            if (operativa === true) {
+
+                estado.classList.add("status-ok");
+
+                estado.innerHTML = "<i></i> OPERATIVA";
+
+                deteccion.textContent = "Activa";
+
+                senal.textContent = "✓ Transmitiendo";
+
+                senal.className = "signal-ok";
+
+                live.textContent = "● LIVE";
+
+                overlay.hidden = true;
+
+
+            } else if (
+                operativa === false &&
+                camara.fallaConfirmada
+            ) {
+
+                estado.classList.add("status-error");
+
+                estado.innerHTML = "<i></i> FALLA";
+
+                deteccion.textContent = "Suspendida";
+
+                senal.textContent = "✕ Sin señal";
+
+                senal.className = "signal-error";
+
+                live.textContent = "● SIN SEÑAL";
+
+                live.classList.add("live-offline");
+
+                overlay.hidden = false;
+
+                overlay.querySelector("strong").textContent =
+                    "SEÑAL PERDIDA";
+
+                overlay.querySelector("span").textContent =
+                    "Cámara sin transmisión";
+
+                tarjeta.classList.add("camera-offline");
+
+
+            } else if (operativa === false) {
+
+                estado.classList.add("status-warning");
+
+                estado.innerHTML = "<i></i> VERIFICANDO";
+
+                deteccion.textContent = "En revisión";
+
+                senal.textContent = "Revisando señal";
+
+                senal.className = "signal-warning";
+
+                live.textContent = "● VERIFICANDO";
+
+                overlay.hidden = false;
+
+                overlay.querySelector("strong").textContent =
+                    "VERIFICANDO SEÑAL";
+
+                overlay.querySelector("span").textContent =
+                    "Esperando recuperación";
+
+
+            } else {
+
+                estado.classList.add("status-warning");
+
+                estado.innerHTML = "<i></i> SIN DATOS";
+
+                deteccion.textContent = "Sin información";
+
+                senal.textContent = "Sin datos";
+
+                senal.className = "signal-warning";
+
+                live.textContent = "● SIN VIDEO";
+
+                overlay.hidden = false;
+
+                overlay.querySelector("strong").textContent =
+                    "ESPERANDO VIDEO";
+
+                overlay.querySelector("span").textContent =
+                    "Selecciona un video en Monitoreo";
+
+            }
+
+        }
+
+
+        // ==========================================
+        // ACTUALIZAR ESTADO GENERAL
+        // ==========================================
+
+        function actualizarEstadoGeneral() {
+
+            const banner =
+                document.getElementById("banner");
+
+            const icono =
+                document.getElementById("banner-icon");
+
+            const texto =
+                document.getElementById("banner-text");
+
+            const estadoGeneral =
+                document.getElementById("estado-general");
+
+
+            const estados = [
+                camaras[1],
+                camaras[2]
+            ];
+
+
+            const hayFallaConfirmada = estados.some(c =>
+                c.activa === false && c.fallaConfirmada
+            );
+
+            const hayFallaEnEspera = estados.some(c =>
+                c.activa === false && !c.fallaConfirmada
+            );
+
+            const faltanDatos = estados.some(c =>
+                c.activa === null
+            );
+
+
+            if (hayFallaConfirmada) {
+
+                banner.className = "banner banner-error";
+
+                icono.textContent = "!";
+
+                texto.textContent =
+                    "SISTEMA FUERA DE SERVICIO · Análisis de ocupación suspendido";
+
+                estadoGeneral.innerHTML =
+                    "<i></i> Fuera de servicio";
+
+                estadoGeneral.className = "general-error";
+
+                return;
+
+            }
+
+
+            if (hayFallaEnEspera) {
+
+                banner.className = "banner banner-warning";
+
+                icono.textContent = "!";
+
+                texto.textContent =
+                    "Falla de transmisión detectada · Verificando durante 5 segundos";
+
+                estadoGeneral.innerHTML =
+                    "<i></i> Verificando cámaras";
+
+                estadoGeneral.className = "general-warning";
+
+                return;
+
+            }
+
+
+            if (faltanDatos) {
+
+                banner.className = "banner banner-warning";
+
+                icono.textContent = "!";
+
+                texto.textContent =
+                    "Esperando información de las cámaras desde Monitoreo";
+
+                estadoGeneral.innerHTML =
+                    "<i></i> Esperando información";
+
+                estadoGeneral.className = "general-warning";
+
+                return;
+
+            }
+
+
+            banner.className = "banner banner-ok";
+
+            icono.textContent = "✓";
+
+            texto.textContent =
+                "Todas las cámaras transmitiendo · Sistema de análisis disponible";
+
+            estadoGeneral.innerHTML =
+                "<i></i> Sistema operativo";
+
+            estadoGeneral.className = "";
+
+        }
+
+
+        // ==========================================
+        // ACTUALIZAR TODA LA INTERFAZ
+        // ==========================================
+
+        function actualizarInterfaz() {
+
+            actualizarCamara(1);
+
+            actualizarCamara(2);
+
+            actualizarEstadoGeneral();
+
+        }
+
+
+        // ==========================================
+        // NAVEGACIÓN DEL PANEL
+        // ==========================================
+
+        document.querySelectorAll("[data-vista]").forEach(enlace => {
+
+            enlace.addEventListener("click", function(event) {
+
+                if (window.parent !== window) {
+
+                    event.preventDefault();
+
+                    window.parent.postMessage(
+                        {
+                            tipo: "aforovision:navegar",
+                            vista: this.dataset.vista
+                        },
+                        window.location.origin
+                    );
+
+                }
+
+            });
+
+        });
+
+
+        // ==========================================
+        // CERRAR SESIÓN
+        // ==========================================
+
+        document.getElementById("cerrar-sesion")
+            .addEventListener("click", function(event) {
+
+                event.preventDefault();
+
+                const confirmar = window.confirm(
+                    "¿Estás seguro de que deseas cerrar sesión?"
+                );
+
+                if (!confirmar) {
+                    return;
+                }
+
+                sessionStorage.removeItem("aforovision_token");
+
+                sessionStorage.removeItem("aforovision_usuario");
+
+                if (window.parent !== window) {
+
+                    window.top.location.replace("login.html");
+
+                } else {
+
+                    window.location.replace("login.html");
+
+                }
+
+            });
+
+
+        // ==========================================
+        // ESCUCHAR CAMBIOS DE MONITOREO
+        // ==========================================
+
+        window.addEventListener("storage", function(event) {
+
+            if (event.key === CLAVE_ESTADO) {
+
+                sincronizarCamaras();
+
+            }
+
+        });
+
+
+        // ==========================================
+        // INICIAR SUPERVISIÓN
+        // ==========================================
+
+        sincronizarCamaras();
+
+        setInterval(
+            sincronizarCamaras,
+            INTERVALO_ACTUALIZACION
+        );
+
+    </script>
+
+</body>
+</html>

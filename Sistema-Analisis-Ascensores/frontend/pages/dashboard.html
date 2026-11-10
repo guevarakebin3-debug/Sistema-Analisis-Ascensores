@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | AforoVisión</title>
+    <link rel="stylesheet" href="../styles/dashboard.css">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="logo">▤</div>
+            <div>
+                <h2>AFOROVISIÓN</h2>
+                <p>v2.4 · Admin</p>
+            </div>
+        </div>
+
+        <nav>
+            <a class="active" href="dashboard.html" data-vista="dashboard">
+                ▦ <span>Dashboard</span>
+            </a>
+
+            <a href="monitoreo.html" data-vista="monitoreo">
+                ▣ <span>Monitoreo</span>
+            </a>
+
+            <a href="configuracion.html" data-vista="configuracion">
+                ⚙ <span>Configuración</span>
+            </a>
+
+            <a href="estado-camaras.html" data-vista="estado-camaras">
+                ⇥ <span>Estado de cámaras</span>
+            </a>
+        </nav>
+
+        <div class="general-status">
+            <small>ESTADO GENERAL</small>
+            <p>
+                <span class="dot"></span>
+                <span id="estado-sistema">Esperando datos...</span>
+            </p>
+        </div>
+
+        <a href="login.html" id="btnCerrarSesion" class="logout">
+            ↪ <span>Cerrar sesión</span>
+        </a>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>Dashboard</h1>
+            <p>Visión general del sistema · Actualización automática</p>
+        </header>
+
+
+        <!-- DECISIÓN DE INGRESO -->
+
+        <section class="decision-card" id="decision-card">
+
+            <h2>
+                <span class="dot"></span>
+                <span id="decision">ESPERANDO LECTURAS</span>
+            </h2>
+
+            <p id="decision-detail">
+                Reproduce los videos desde Monitoreo para recibir información.
+            </p>
+
+            <div class="voice-message">
+                🔊 <strong>VOZ:</strong>
+                <span id="mensaje-voz">Sin evaluación de ingreso.</span>
+            </div>
+
+        </section>
+
+
+        <!-- FLUJO DE ANÁLISIS -->
+
+        <section class="analysis-card">
+
+            <h3>FLUJO DE ANÁLISIS AUTOMÁTICO</h3>
+
+            <div class="analysis-flow">
+
+                <article class="flow-box">
+                    <small>Ocupación actual</small>
+                    <strong id="cam1-porcentaje">0%</strong>
+                    <span>Personas dentro</span>
+                </article>
+
+                <b class="operator">+</b>
+
+                <article class="flow-box">
+                    <small>Ingresos pendientes</small>
+                    <strong id="nuevo-ingreso">+0</strong>
+                    <span>Nuevos ingresos</span>
+                </article>
+
+                <b class="operator">=</b>
+
+                <article class="flow-box">
+                    <small>Ocupación proyectada</small>
+                    <strong id="proyectado-flow">0%</strong>
+                    <span>Porcentaje calculado</span>
+                </article>
+
+                <b class="versus">VS</b>
+
+                <article class="flow-box">
+                    <small>Límite</small>
+                    <strong id="limite-flow">80%</strong>
+                    <span>Valor de referencia</span>
+                </article>
+
+            </div>
+
+            <p class="analysis-note">
+                ↗ Los datos se reciben automáticamente desde el módulo de Monitoreo.
+            </p>
+
+        </section>
+
+
+        <!-- INDICADORES -->
+
+        <section class="metrics-grid">
+
+            <article class="metric-card">
+                <p>OCUPACIÓN ACTUAL <span>⌁</span></p>
+                <strong class="green" id="ocupacion-actual">0%</strong>
+            </article>
+
+            <article class="metric-card">
+                <p>PERSONAS DETECTADAS <span>♙</span></p>
+                <strong id="personas">0</strong>
+            </article>
+
+            <article class="metric-card">
+                <p>OBJETOS DETECTADOS <span>⬡</span></p>
+                <strong id="objetos">0</strong>
+            </article>
+
+            <article class="metric-card">
+                <p>CAPACIDAD MÁXIMA</p>
+                <strong class="blue" id="capacidad">10 pers.</strong>
+            </article>
+
+            <article class="metric-card">
+                <p>LÍMITE CONFIGURADO</p>
+                <strong class="blue" id="limite">80%</strong>
+            </article>
+
+            <article class="metric-card">
+                <p>INGRESOS REGISTRADOS</p>
+                <strong id="nuevo-ingreso-card">0</strong>
+            </article>
+
+            <article class="metric-card">
+                <p>DIRECCIÓN DEL ÚLTIMO MOVIMIENTO</p>
+                <strong id="direccion">Sin movimiento</strong>
+            </article>
+
+            <article class="metric-card highlight">
+                <p>OCUPACIÓN PROYECTADA</p>
+                <strong class="green" id="ocupacion-proyectada">0%</strong>
+            </article>
+
+            <article class="metric-card">
+                <p>CÁMARA 1 - INTERIOR</p>
+                <strong class="status-text" id="estado-cam1">Esperando</strong>
+            </article>
+
+            <article class="metric-card">
+                <p>CÁMARA 2 - EXTERIOR</p>
+                <strong class="status-text" id="estado-cam2">Esperando</strong>
+            </article>
+
+            <article class="metric-card highlight">
+                <p>ESTADO DEL INGRESO</p>
+                <strong class="status-text" id="estado-ingreso">Pendiente</strong>
+            </article>
+
+        </section>
+
+
+        <!-- NIVELES DE OCUPACIÓN -->
+
+        <section class="levels-card">
+
+            <h3>NIVELES DE OCUPACIÓN</h3>
+
+            <div class="level-heading">
+                <span>Ocupación actual</span>
+                <strong class="green" id="nivel-actual-texto">0%</strong>
+            </div>
+
+            <div class="progress-track">
+                <div class="progress-fill" id="barra-actual"></div>
+                <span class="limit-marker" id="marca-actual"></span>
+            </div>
+
+            <p class="limit-label" id="limite-label-actual">
+                Límite: 80%
+            </p>
+
+            <div class="level-heading">
+                <span>Ocupación proyectada</span>
+                <strong class="green" id="nivel-proyectado-texto">0%</strong>
+            </div>
+
+            <div class="progress-track">
+                <div class="progress-fill" id="barra-proyectada"></div>
+                <span class="limit-marker" id="marca-proyectada"></span>
+            </div>
+
+            <p class="limit-label" id="limite-label-proyectado">
+                Límite: 80%
+            </p>
+
+        </section>
+
+
+        <footer>
+            AforoVisión · Sistema de análisis de ocupación en ascensores
+        </footer>
+
+    </main>
+
+
+    <script>
+
+        // ==========================================
+        // PROTECCIÓN DE SESIÓN
+        // ==========================================
+
+        const token = sessionStorage.getItem("aforovision_token");
+
+        if (!token) {
+            window.top.location.replace("login.html");
+        }
+
+
+        // ==========================================
+        // CLAVES DE ALMACENAMIENTO
+        // ==========================================
+
+        const CLAVE_ESTADO = "aforovision_estado_monitoreo";
+
+        const CLAVE_CONFIGURACION = "aforovision_configuracion";
+
+
+        // ==========================================
+        // CONFIGURACIÓN DEL SISTEMA
+        // ==========================================
+
+        const CONFIGURACION_PREDETERMINADA = {
+            capacidad: 10,
+            limite: 80,
+            area: 3.5,
+            linea: 50
+        };
+
+        let configuracion = { ...CONFIGURACION_PREDETERMINADA };
+
+
+        function cargarConfiguracion() {
+
+            try {
+
+                const guardada =
+                    localStorage.getItem(CLAVE_CONFIGURACION);
+
+                if (!guardada) {
+                    configuracion = { ...CONFIGURACION_PREDETERMINADA };
+                    return;
+                }
+
+                const resultado = JSON.parse(guardada);
+
+                const capacidad = Number(resultado.capacidad);
+                const limite = Number(resultado.limite);
+                const area = Number(resultado.area);
+                const linea = Number(resultado.linea);
+
+                configuracion = {
+                    capacidad:
+                        Number.isInteger(capacidad) &&
+                        capacidad >= 1 &&
+                        capacidad <= 100
+                            ? capacidad
+                            : 10,
+
+                    limite:
+                        Number.isInteger(limite) &&
+                        limite >= 1 &&
+                        limite <= 100
+                            ? limite
+                            : 80,
+
+                    area:
+                        Number.isFinite(area) &&
+                        area >= 0.1 &&
+                        area <= 100
+                            ? area
+                            : 3.5,
+
+                    linea:
+                        Number.isInteger(linea) &&
+                        linea >= 1 &&
+                        linea <= 99
+                            ? linea
+                            : 50
+                };
+
+            } catch (error) {
+
+                console.error(
+                    "Error al cargar la configuración:",
+                    error
+                );
+
+                configuracion = { ...CONFIGURACION_PREDETERMINADA };
+
+            }
+
+        }
+
+
+        // ==========================================
+        // DATOS DEL MONITOREO
+        // ==========================================
+
+        const datos = {
+            personas: 0,
+            objetos: 0,
+            ocupacionActual: 0,
+            ingresosRegistrados: 0,
+            ingresosPendientes: 0,
+            ocupacionProyectada: 0,
+            direccion: "Sin movimiento",
+            decision: "Esperando",
+            decisionDisponible: false,
+            camara1Activa: false,
+            camara2Activa: false,
+            conectado: false
+        };
+
+
+        function obtenerValor(valor) {
+
+            const numero = Number(valor);
+
+            return Number.isFinite(numero) ? numero : 0;
+
+        }
+
+
+        // ==========================================
+        // CÁLCULO DE PORCENTAJES
+        // ==========================================
+
+        function obtenerPorcentaje(personas) {
+
+            const capacidad = configuracion.capacidad;
+
+            if (capacidad <= 0) {
+                return 0;
+            }
+
+            return Math.max(
+                (personas / capacidad) * 100,
+                0
+            );
+
+        }
+
+
+        // ==========================================
+        // LEER DATOS DE MONITOREO
+        // ==========================================
+
+        function leerDatosMonitoreo() {
+
+            try {
+
+                const guardado =
+                    localStorage.getItem(CLAVE_ESTADO);
+
+                if (!guardado) {
+
+                    datos.conectado = false;
+
+                    actualizarDashboard();
+
+                    return;
+
+                }
+
+                const resultado = JSON.parse(guardado);
+
+                datos.personas =
+                    obtenerValor(resultado.personas);
+
+                datos.objetos =
+                    obtenerValor(resultado.objetos);
+
+                datos.ocupacionActual =
+                    obtenerValor(resultado.ocupacionActual);
+
+                datos.ingresosRegistrados =
+                    obtenerValor(resultado.ingresosRegistrados);
+
+                datos.ingresosPendientes =
+                    obtenerValor(resultado.ingresosPendientes);
+
+                datos.ocupacionProyectada =
+                    obtenerValor(resultado.ocupacionProyectada);
+
+                datos.direccion =
+                    resultado.direccion || "Sin movimiento";
+
+                datos.decision =
+                    resultado.decision || "Esperando";
+
+                datos.decisionDisponible =
+                    resultado.decisionDisponible === true;
+
+                datos.camara1Activa =
+                    resultado.camara1Activa === true;
+
+                datos.camara2Activa =
+                    resultado.camara2Activa === true;
+
+                datos.conectado = true;
+
+                actualizarDashboard();
+
+            } catch (error) {
+
+                console.error(
+                    "Error leyendo los datos de Monitoreo:",
+                    error
+                );
+
+                datos.conectado = false;
+
+                actualizarDashboard();
+
+            }
+
+        }
+
+
+        // ==========================================
+        // ACTUALIZAR DASHBOARD
+        // ==========================================
+
+        function actualizarDashboard() {
+
+            const porcentajeActual =
+                obtenerPorcentaje(datos.ocupacionActual);
+
+            const porcentajeProyectado =
+                obtenerPorcentaje(datos.ocupacionProyectada);
+
+            const limite = configuracion.limite;
+
+            const capacidad = configuracion.capacidad;
+
+
+            // Identificar decisión de ingreso.
+            const decisionNormalizada =
+                String(datos.decision).toLowerCase();
+
+            const permitido =
+                decisionNormalizada.includes("permitido") &&
+                !decisionNormalizada.includes("no permitido");
+
+            const decisionDisponible =
+                datos.conectado && datos.decisionDisponible;
+
+
+            // --------------------------------------
+            // FLUJO DE ANÁLISIS
+            // --------------------------------------
+
+            document.getElementById("cam1-porcentaje").textContent =
+                porcentajeActual.toFixed(1) + "%";
+
+            document.getElementById("nuevo-ingreso").textContent =
+                "+" + datos.ingresosPendientes;
+
+            document.getElementById("proyectado-flow").textContent =
+                porcentajeProyectado.toFixed(1) + "%";
+
+            document.getElementById("limite-flow").textContent =
+                limite + "%";
+
+
+            // --------------------------------------
+            // INDICADORES PRINCIPALES
+            // --------------------------------------
+
+            document.getElementById("ocupacion-actual").textContent =
+                porcentajeActual.toFixed(1) + "%";
+
+            document.getElementById("personas").textContent =
+                datos.personas;
+
+            document.getElementById("objetos").textContent =
+                datos.objetos;
+
+            document.getElementById("capacidad").textContent =
+                capacidad + " pers.";
+
+            document.getElementById("limite").textContent =
+                limite + "%";
+
+            document.getElementById("nuevo-ingreso-card").textContent =
+                datos.ingresosRegistrados;
+
+            document.getElementById("direccion").textContent =
+                datos.direccion;
+
+            document.getElementById("ocupacion-proyectada").textContent =
+                porcentajeProyectado.toFixed(1) + "%";
+
+
+            // --------------------------------------
+            // NIVELES DE OCUPACIÓN
+            // --------------------------------------
+
+            document.getElementById("nivel-actual-texto").textContent =
+                porcentajeActual.toFixed(1) + "%";
+
+            document.getElementById("nivel-proyectado-texto").textContent =
+                porcentajeProyectado.toFixed(1) + "%";
+
+            document.getElementById("limite-label-actual").textContent =
+                "Límite: " + limite + "%";
+
+            document.getElementById("limite-label-proyectado").textContent =
+                "Límite: " + limite + "%";
+
+
+            // Las barras pueden superar el 100% para mostrar exceso.
+            const anchoActual =
+                Math.min(porcentajeActual, 100);
+
+            const anchoProyectado =
+                Math.min(porcentajeProyectado, 100);
+
+            document.getElementById("barra-actual").style.width =
+                anchoActual + "%";
+
+            document.getElementById("barra-proyectada").style.width =
+                anchoProyectado + "%";
+
+            document.getElementById("marca-actual").style.left =
+                limite + "%";
+
+            document.getElementById("marca-proyectada").style.left =
+                limite + "%";
+
+
+            // --------------------------------------
+            // DECISIÓN DE INGRESO
+            // --------------------------------------
+
+            document.getElementById("decision").textContent =
+                !decisionDisponible
+                    ? "ESPERANDO LECTURAS"
+                    : datos.decision.toUpperCase();
+
+            document.getElementById("decision-detail").textContent =
+                !decisionDisponible
+                    ? "Reproduce los videos desde Monitoreo para recibir información."
+                    : `Ocupación actual: ${datos.ocupacionActual} de ${capacidad} personas. Ocupación proyectada: ${porcentajeProyectado.toFixed(1)}%.`;
+
+            document.getElementById("mensaje-voz").textContent =
+                !decisionDisponible
+                    ? "Sin evaluación de ingreso."
+                    : permitido
+                        ? "El ingreso se encuentra permitido."
+                        : "Capacidad completa, espere el siguiente viaje.";
+
+            document.getElementById("estado-ingreso").textContent =
+                !decisionDisponible
+                    ? "Pendiente"
+                    : permitido
+                        ? "Permitido"
+                        : "No permitido";
+
+
+            // --------------------------------------
+            // ESTADO DE LAS CÁMARAS
+            // --------------------------------------
+
+            document.getElementById("estado-cam1").textContent =
+                datos.camara1Activa
+                    ? "En reproducción"
+                    : "Detenida";
+
+            document.getElementById("estado-cam2").textContent =
+                datos.camara2Activa
+                    ? "En reproducción"
+                    : "Detenida";
+
+
+            // --------------------------------------
+            // ESTADO GENERAL
+            // --------------------------------------
+
+            document.getElementById("estado-sistema").textContent =
+                !datos.conectado
+                    ? "Esperando datos de monitoreo"
+                    : datos.camara1Activa && datos.camara2Activa
+                        ? "Cámaras transmitiendo"
+                        : "Revisar estado de cámaras";
+
+
+            // --------------------------------------
+            // APARIENCIA
+            // --------------------------------------
+
+            document.getElementById("decision-card").classList.toggle(
+                "denied",
+                decisionDisponible && !permitido
+            );
+
+            document.getElementById("barra-actual").style.backgroundColor =
+                porcentajeActual >= limite ? "#dc2626" : "";
+
+            document.getElementById("barra-proyectada").style.backgroundColor =
+                porcentajeProyectado >= limite ? "#dc2626" : "";
+
+        }
+
+
+        // ==========================================
+        // ACTUALIZAR CONFIGURACIÓN Y DATOS
+        // ==========================================
+
+        function actualizarTodo() {
+
+            cargarConfiguracion();
+
+            leerDatosMonitoreo();
+
+        }
+
+
+        // ==========================================
+        // NAVEGACIÓN DEL PANEL
+        // ==========================================
+
+        document.querySelectorAll("[data-vista]").forEach(enlace => {
+
+            enlace.addEventListener("click", function(event) {
+
+                if (window.parent !== window) {
+
+                    event.preventDefault();
+
+                    window.parent.postMessage(
+                        {
+                            tipo: "aforovision:navegar",
+                            vista: this.dataset.vista
+                        },
+                        window.location.origin
+                    );
+
+                }
+
+            });
+
+        });
+
+
+        // ==========================================
+        // CERRAR SESIÓN
+        // ==========================================
+
+        document.getElementById("btnCerrarSesion")
+            .addEventListener("click", function(event) {
+
+                event.preventDefault();
+
+                const confirmar = window.confirm(
+                    "¿Estás seguro de que deseas cerrar sesión?"
+                );
+
+                if (!confirmar) {
+                    return;
+                }
+
+                sessionStorage.removeItem("aforovision_token");
+
+                sessionStorage.removeItem("aforovision_usuario");
+
+                window.top.location.replace("login.html");
+
+            });
+
+
+        // ==========================================
+        // ESCUCHAR CAMBIOS DE CONFIGURACIÓN
+        // ==========================================
+
+        window.addEventListener("storage", function(event) {
+
+            if (
+                event.key === CLAVE_CONFIGURACION ||
+                event.key === CLAVE_ESTADO
+            ) {
+
+                actualizarTodo();
+
+            }
+
+        });
+
+
+        // ==========================================
+        // ACTUALIZACIÓN AUTOMÁTICA
+        // ==========================================
+
+        window.addEventListener("focus", actualizarTodo);
+
+        document.addEventListener("visibilitychange", function() {
+
+            if (!document.hidden) {
+                actualizarTodo();
+            }
+
+        });
+
+
+        // ==========================================
+        // INICIAR DASHBOARD
+        // ==========================================
+
+        actualizarTodo();
+
+        setInterval(actualizarTodo, 1000);
+
+    </script>
+
+</body>
+</html>
